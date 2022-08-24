@@ -2,6 +2,16 @@
 #include <Adafruit_NeoMatrix.h>
 #include <Adafruit_NeoPixel.h>
 
+#define GRID_HEIGHT 8
+#define GRID_LENGTH 32
+#define STRIP_LENGTH 58
+
+/**
+ * TODO:
+ * light specific pixels
+ * light rows
+ * light cols
+ */
 
 class Panel
 {
@@ -18,6 +28,7 @@ class Panel
 
         void init(int brightness, int init_value);
         void show();
+        void setPixel(int x, int y, uint32_t color);
 };
 
 Panel::Panel(
@@ -28,7 +39,6 @@ Panel::Panel(
     _matrix = matrix;
     _top_strand = top;
     _bottom_strand = bottom;
-    Serial.println("initialized");
 }
 
 void Panel::init(int brightness, int init_value) {
@@ -44,6 +54,20 @@ void Panel::init(int brightness, int init_value) {
     _matrix->fillScreen(_init_value);
     _top_strand->fill(_init_value);
     _bottom_strand->fill(_init_value);
+}
+
+void Panel::setPixel(int x, int y, uint32_t color) {
+    if (x < GRID_LENGTH) {
+        _matrix->drawPixel(x, y, color);
+    }
+    else {
+        if (y == 0) {
+            _top_strand->setPixelColor(x, color);
+        }
+        else if (y == 7) {
+            _bottom_strand->setPixelColor(x, color);
+        }
+    }
 }
 
 void Panel::show() {
