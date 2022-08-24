@@ -48,37 +48,19 @@ int g_loop = 0;
 
 void setup() {
     Serial.begin(9600);
-    // panel.init(BRIGHTNESS, INIT_VALUE);
+    panel.init(BRIGHTNESS, INIT_VALUE);
 }
 
 void loop() {
   Serial.println("Loop");
 
-  /*
   for (int16_t x = 0; x < GRID_LENGTH + STRIP_LENGTH ; x++) {
     for (int16_t y = 0; y < GRID_HEIGHT; y++) {
-        uint32_t color;
-        if (x < GRID_LENGTH) {
-            color = matrix.Color(255, 0, 0);
-        }
-        else {
-            color = top_strand.Color(255, 0, 0);
-        }
-        Serial.println(color);
-        panel.setPixel(x, y, color);
+        panel.setPixel(x, y, 255, 0, 0);
     }
   }
-  */
-  // panel.setPixel(0, 1, matrix.Color(255, 0, 0));
-  matrix.drawPixel(0, 3, matrix.Color(255, 0, 0));
-  top_strand.setPixelColor(34, 255, 0, 0);
-  bottom_strand.setPixelColor(34, 255, 0, 0);
-  matrix.show();
-  top_strand.show();
-  bottom_strand.show();
-
   delay(DELAY);
-  // panel.show();
+  panel.show();
 
   g_loop++;
 }

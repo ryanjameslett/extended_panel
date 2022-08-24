@@ -28,7 +28,7 @@ class Panel
 
         void init(int brightness, int init_value);
         void show();
-        void setPixel(int x, int y, uint32_t color);
+        void setPixel(int x, int y,uint8_t r, uint8_t g, uint8_t b);
 };
 
 Panel::Panel(
@@ -56,16 +56,16 @@ void Panel::init(int brightness, int init_value) {
     _bottom_strand->fill(_init_value);
 }
 
-void Panel::setPixel(int x, int y, uint32_t color) {
+void Panel::setPixel(int x, int y, uint8_t r, uint8_t g, uint8_t b) {
     if (x < GRID_LENGTH) {
-        _matrix->drawPixel(x, y, color);
+        _matrix->drawPixel(x, y, _matrix->Color(r,g,b));
     }
     else {
         if (y == 0) {
-            _top_strand->setPixelColor(x, color);
+            _top_strand->setPixelColor(x-GRID_LENGTH, _top_strand->Color(r,g,b));
         }
         else if (y == 7) {
-            _bottom_strand->setPixelColor(x, color);
+            _bottom_strand->setPixelColor(x-GRID_LENGTH, _bottom_strand->Color(r,g,b));
         }
     }
 }
