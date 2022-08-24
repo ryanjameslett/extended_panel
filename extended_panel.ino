@@ -49,18 +49,16 @@ int g_loop = 0;
 int g_total_length = (GRID_LENGTH + STRAND_LENGTH);
 
 // Color Wheel
-float g_color_counter = 0;
-int g_color_offset = 1;
+uint32_t g_color_counter = 0;
 
 int num_pixels = (GRID_LENGTH + STRAND_LENGTH) * GRID_HEIGHT;
-float increment = num_pixels / 255;
+uint32_t increment = ceil(num_pixels / 255.0);
 
 void color_wheel_loop() {
   for (int16_t x = 0; x < GRID_LENGTH + STRAND_LENGTH ; x++) {
     for (int16_t y = 0; y < GRID_HEIGHT; y++) {
-        float tmp = 0;
+        uint32_t tmp = 0;
 
-        // tmp = ((y * 256 / g_total_length) + x) & 255;
         tmp = g_color_counter;
 
         if (tmp < 85) {
@@ -75,6 +73,8 @@ void color_wheel_loop() {
             panel.setPixel(x, y, 0, tmp * 3, 255 - (tmp * 3));
         }
 
+        Serial.println(increment);
+
         g_color_counter = g_color_counter + increment;
         if (g_color_counter > 255) {
             g_color_counter = 0;
@@ -82,10 +82,10 @@ void color_wheel_loop() {
     }
   }
 
-  g_color_counter = g_color_counter + increment;
-  // g_color_counter = 0;
+  // g_color_counter = g_color_counter + increment;
+  g_color_counter = 0;
 
-  delay(200);
+  delay(500);
 }
 
 // Main code
