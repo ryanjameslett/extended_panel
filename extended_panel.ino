@@ -58,14 +58,15 @@ float increment = num_pixels / 255;
 void color_wheel_loop() {
   for (int16_t x = 0; x < GRID_LENGTH + STRAND_LENGTH ; x++) {
     for (int16_t y = 0; y < GRID_HEIGHT; y++) {
-        int tmp = 0;
+        float tmp = 0;
 
-        tmp = ((y * 256 / g_total_length) + x) & 255;
+        // tmp = ((y * 256 / g_total_length) + x) & 255;
+        tmp = g_color_counter;
 
         if (tmp < 85) {
             panel.setPixel(x, y, tmp * 3, 255 - tmp, 0);
         }
-        else if (g_color_counter < 170) {
+        else if (tmp < 170) {
             tmp = tmp - 85;
             panel.setPixel(x, y, 255 - tmp, 0, tmp * 3);
         }
@@ -74,17 +75,15 @@ void color_wheel_loop() {
             panel.setPixel(x, y, 0, tmp * 3, 255 - (tmp * 3));
         }
 
-        /*
         g_color_counter = g_color_counter + increment;
         if (g_color_counter > 255) {
             g_color_counter = 0;
         }
-        */
     }
   }
 
-  // g_color_counter = g_color_counter + g_color_offset;
-  g_color_counter = 0;
+  g_color_counter = g_color_counter + increment;
+  // g_color_counter = 0;
 
   delay(200);
 }
