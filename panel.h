@@ -26,8 +26,9 @@ Panel::Panel(
         Adafruit_NeoPixel *bottom
 ) {
     _matrix = matrix;
-    *_top_strand = *top;
-    *_bottom_strand = *bottom;
+    _top_strand = top;
+    _bottom_strand = bottom;
+    Serial.println("initialized");
 }
 
 void Panel::init(int brightness, int init_value) {

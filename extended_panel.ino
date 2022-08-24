@@ -5,7 +5,7 @@
 
 #define BRIGHTNESS 30
 #define DELAY 10
-#define INIT_VALUE 125
+#define INIT_VALUE 255
 
 #define GRID_PIN 3
 #define GRID_HEIGHT 8
@@ -43,12 +43,12 @@ Panel panel = Panel(
     );
 
 void setup() {
-  // put your setup code here, to run once:
+    Serial.begin(9600);
     panel.init(BRIGHTNESS, INIT_VALUE);
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  Serial.println("Loop");
   panel.show();
   delay(DELAY);
 }
