@@ -125,15 +125,20 @@ void color_wipe_loop() {
  * Rain Start
  */
 int g_raindrop_size = 5;
+
 void rain_loop() {
-    long r = random(0, 255);
-    long g = random(0, 255);
-    long b = random(0, 255);
+    long r = random(0, 256);
+    long g = random(0, 256 - r);
+    long b = random(0, 256 - g);
     long y = random(0, 8);
+    // trail color
+    long tr_r = random(0, 256);
+    long tr_g = random(0, 256 - tr_r);
+    long tr_b = random(0, 256 - tr_g);
 
     for (int x = g_total_length; x >= -g_raindrop_size; x--) {
         panel.setPixel(x, y, r, g, b);
-        panel.setPixel(x+g_raindrop_size, y, 0, 0, 0);
+        panel.setPixel(x+g_raindrop_size, y, tr_r, tr_g, tr_b);
         panel.show();
         delay(5);
     }
@@ -142,7 +147,53 @@ void rain_loop() {
 /**
  * Simple Snake
  */
+int g_snake_size = 5;
+
 void simple_snake_loop() {
+    // snake color
+    long r = random(0, 256);
+    long g = random(0, 256 - r);
+    long b = random(0, 256 - g);
+    // trail color
+    long tr_r = random(0, 256);
+    long tr_g = random(0, 256 - tr_r);
+    long tr_b = random(0, 256 - tr_g);
+    int x, y;
+
+    // move 1
+    for (x = g_total_length; x >= -g_snake_size; x--) {
+        panel.setPixel(x, 0, r, g, b);
+        panel.setPixel(x+g_snake_size, 0, tr_r, tr_g, tr_b);
+        panel.show();
+        delay(5);
+    }
+
+    // move 2 - 7
+    for (y = 1; y < GRID_HEIGHT - 1; y++) {
+        for (x = 0; x < GRID_LENGTH + g_snake_size; x++) {
+            panel.setPixel(x, y, r, g, b);
+            panel.setPixel(x-g_snake_size, y, tr_r, tr_g, tr_b);
+            panel.show();
+            delay(5);
+        }
+
+        y++;
+
+        for (x = GRID_LENGTH; x >= 0 - g_snake_size; x--) {
+            panel.setPixel(x, y, r, g, b);
+            panel.setPixel(x+g_snake_size, y, tr_r, tr_g, tr_b);
+            panel.show();
+            delay(5);
+        }
+    }
+
+    // move 8
+    for (x = 0; x < g_total_length + g_snake_size; x++) {
+        panel.setPixel(x, 7, r, g, b);
+        panel.setPixel(x-g_snake_size, 7, tr_r, tr_g, tr_b);
+        panel.show();
+        delay(5);
+    }
 }
 
 /**
