@@ -3,6 +3,7 @@
 #include <Adafruit_NeoPixel.h>
 #include "panel.h"
 
+#define PROGRAM 2
 #define BRIGHTNESS 10
 #define DELAY 10
 #define INIT_COLOR 0
@@ -14,6 +15,9 @@
 #define GRID_PIN 3
 #define TOP_STRAND_PIN 5
 #define BOT_STRAND_PIN 6
+
+#define P_COLOR_WHEEL 1
+#define P_COLOR_WIPE 2
 
 
 Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(
@@ -45,11 +49,12 @@ Panel panel = Panel(
 
 
 // Program Globals
-int g_loop = 0;
 int g_total_length = (GRID_LENGTH + STRAND_LENGTH);
 int g_total_num_pixels = (GRID_LENGTH + STRAND_LENGTH) * GRID_HEIGHT;
 
-// Color Wheel
+/***
+ * Color Wheel Start
+ */
 byte g_color_counter = 0;
 int increment = g_total_num_pixels / 255.0;
 
@@ -87,7 +92,31 @@ void color_wheel_loop() {
     }
 }
 
-// Main code
+/***
+ * Color Wipe Start
+ */
+
+void color_wipe_loop() {
+    for (int count = 0; count < 3; count++) {
+        for (int x = 0; x < g_total_length; x++) {
+            if (count % 3 == 0) {
+                panel.setCol(x, 255, 0, 0);
+            }
+            else if (count % 3 == 1) {
+                panel.setCol(x, 0, 255, 0);
+            }
+            else {
+                panel.setCol(x, 0, 0, 255);
+            }
+            panel.show();
+            delay(20);
+        }
+    }
+}
+
+/**
+ *Main code
+ */
 
 void setup() {
     Serial.begin(9600);
@@ -95,7 +124,14 @@ void setup() {
 }
 
 void loop() {
-  Serial.println("Loop");
-  color_wheel_loop();
-  g_loop++;
+    Serial.println("Loop");
+    switch (PROGRAM) {
+        case P_COLOR_WHEEL:
+            color_wheel_loop();
+            break;
+
+        case P_COLOR_WIPE:
+            color_wipe_loop();
+            break;
+    }
 }

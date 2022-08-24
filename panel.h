@@ -29,6 +29,7 @@ class Panel
         void show();
         void setPixel(int x, int y, uint8_t r, uint8_t g, uint8_t b);
         void setPixel(int x, int y, uint32_t color);
+        void setCol(int x, uint8_t r, uint8_t g, uint8_t b);
 };
 
 Panel::Panel(
@@ -81,6 +82,12 @@ void Panel::setPixel(int x, int y, uint32_t color) {
         else if (y == 7) {
             _bottom_strand->setPixelColor(x-GRID_LENGTH, color);
         }
+    }
+}
+
+void Panel::setCol(int x, uint8_t r, uint8_t g, uint8_t b) {
+    for (int y = 0; y < GRID_HEIGHT; y++) {
+        Panel::setPixel(x, y, r, g, b);
     }
 }
 
