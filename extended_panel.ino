@@ -5,7 +5,7 @@
 
 #define BRIGHTNESS 30
 #define DELAY 10
-#define INIT_COLOR 100
+#define INIT_COLOR 0
 
 #define GRID_HEIGHT 8
 #define GRID_LENGTH 32
@@ -47,45 +47,44 @@ Panel panel = Panel(
 // Program Globals
 int g_loop = 0;
 int g_total_length = (GRID_LENGTH + STRAND_LENGTH);
+int g_total_num_pixels = (GRID_LENGTH + STRAND_LENGTH) * GRID_HEIGHT;
 
 // Color Wheel
-uint32_t g_color_counter = 0;
+byte g_color_counter = 0;
+int increment = g_total_num_pixels / 255.0;
 
-int num_pixels = (GRID_LENGTH + STRAND_LENGTH) * GRID_HEIGHT;
-uint32_t increment = ceil(num_pixels / 255.0);
+void set_color_pixel(int x, int y, byte value) {
+    if (value < 85) {
+        panel.setPixel(x, y, value * 3, 255 - value, 0);
+    }
+    else if (value < 170) {
+        value = value - 85;
+        panel.setPixel(x, y, 255 - value, 0, value * 3);
+    }
+    else {
+        value = value - 170;
+        panel.setPixel(x, y, 0, value * 3, 255 - (value * 3));
+    }
+}
 
 void color_wheel_loop() {
-  for (int16_t x = 0; x < GRID_LENGTH + STRAND_LENGTH ; x++) {
-    for (int16_t y = 0; y < GRID_HEIGHT; y++) {
-        uint32_t tmp = 0;
+    for (int16_t j = 0; j < 256 * 5; j++) {
+        for (int16_t x = 0; x < GRID_LENGTH + STRAND_LENGTH ; x++) {
+            for (int16_t y = 0; y < GRID_HEIGHT; y++) {
+                byte tmp = 0;
 
-        tmp = g_color_counter;
+                tmp = ((g_color_counter * 256 / g_total_length) + j) & 255;
+                set_color_pixel(x, y, tmp);
 
-        if (tmp < 85) {
-            panel.setPixel(x, y, tmp * 3, 255 - tmp, 0);
+                g_color_counter = g_color_counter + increment;
+                if (g_color_counter > 255) {
+                    g_color_counter = 0;
+                }
+            }
         }
-        else if (tmp < 170) {
-            tmp = tmp - 85;
-            panel.setPixel(x, y, 255 - tmp, 0, tmp * 3);
-        }
-        else {
-            tmp = tmp - 170;
-            panel.setPixel(x, y, 0, tmp * 3, 255 - (tmp * 3));
-        }
-
-        Serial.println(increment);
-
-        g_color_counter = g_color_counter + increment;
-        if (g_color_counter > 255) {
-            g_color_counter = 0;
-        }
+        panel.show();
+        delay(50);
     }
-  }
-
-  // g_color_counter = g_color_counter + increment;
-  g_color_counter = 0;
-
-  delay(500);
 }
 
 // Main code
@@ -97,9 +96,6 @@ void setup() {
 
 void loop() {
   Serial.println("Loop");
-
   color_wheel_loop();
-
-  panel.show();
   g_loop++;
 }
