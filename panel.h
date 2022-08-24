@@ -8,7 +8,6 @@
 
 /**
  * TODO:
- * light specific pixels
  * light rows
  * light cols
  */
@@ -28,7 +27,8 @@ class Panel
 
         void init(int brightness, int init_value);
         void show();
-        void setPixel(int x, int y,uint8_t r, uint8_t g, uint8_t b);
+        void setPixel(int x, int y, uint8_t r, uint8_t g, uint8_t b);
+        void setPixel(int x, int y, uint32_t color);
 };
 
 Panel::Panel(
@@ -66,6 +66,20 @@ void Panel::setPixel(int x, int y, uint8_t r, uint8_t g, uint8_t b) {
         }
         else if (y == 7) {
             _bottom_strand->setPixelColor(x-GRID_LENGTH, _bottom_strand->Color(r,g,b));
+        }
+    }
+}
+
+void Panel::setPixel(int x, int y, uint32_t color) {
+    if (x < GRID_LENGTH) {
+        _matrix->drawPixel(x, y, color);
+    }
+    else {
+        if (y == 0) {
+            _top_strand->setPixelColor(x-GRID_LENGTH, color);
+        }
+        else if (y == 7) {
+            _bottom_strand->setPixelColor(x-GRID_LENGTH, color);
         }
     }
 }

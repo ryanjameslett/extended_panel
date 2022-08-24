@@ -5,7 +5,7 @@
 
 #define BRIGHTNESS 30
 #define DELAY 10
-#define INIT_VALUE 100
+#define INIT_COLOR 100
 
 #define GRID_HEIGHT 8
 #define GRID_LENGTH 32
@@ -43,24 +43,64 @@ Panel panel = Panel(
     &bottom_strand
     );
 
+
 // Program Globals
 int g_loop = 0;
+int g_total_length = (GRID_LENGTH + STRAND_LENGTH);
+
+// Color Wheel
+float g_color_counter = 0;
+int g_color_offset = 1;
+
+int num_pixels = (GRID_LENGTH + STRAND_LENGTH) * GRID_HEIGHT;
+float increment = num_pixels / 255;
+
+void color_wheel_loop() {
+  for (int16_t x = 0; x < GRID_LENGTH + STRAND_LENGTH ; x++) {
+    for (int16_t y = 0; y < GRID_HEIGHT; y++) {
+        int tmp = 0;
+
+        tmp = ((y * 256 / g_total_length) + x) & 255;
+
+        if (tmp < 85) {
+            panel.setPixel(x, y, tmp * 3, 255 - tmp, 0);
+        }
+        else if (g_color_counter < 170) {
+            tmp = tmp - 85;
+            panel.setPixel(x, y, 255 - tmp, 0, tmp * 3);
+        }
+        else {
+            tmp = tmp - 170;
+            panel.setPixel(x, y, 0, tmp * 3, 255 - (tmp * 3));
+        }
+
+        /*
+        g_color_counter = g_color_counter + increment;
+        if (g_color_counter > 255) {
+            g_color_counter = 0;
+        }
+        */
+    }
+  }
+
+  // g_color_counter = g_color_counter + g_color_offset;
+  g_color_counter = 0;
+
+  delay(200);
+}
+
+// Main code
 
 void setup() {
     Serial.begin(9600);
-    panel.init(BRIGHTNESS, INIT_VALUE);
+    panel.init(BRIGHTNESS, INIT_COLOR);
 }
 
 void loop() {
   Serial.println("Loop");
 
-  for (int16_t x = 0; x < GRID_LENGTH + STRIP_LENGTH ; x++) {
-    for (int16_t y = 0; y < GRID_HEIGHT; y++) {
-        panel.setPixel(x, y, 255, 0, 0);
-    }
-  }
-  delay(DELAY);
-  panel.show();
+  color_wheel_loop();
 
+  panel.show();
   g_loop++;
 }
