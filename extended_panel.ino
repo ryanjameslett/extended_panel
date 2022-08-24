@@ -1,9 +1,14 @@
+/***
+ * TODO:
+ * - each program will take a brightness input
+ *
+ */
 #include <Adafruit_GFX.h>
 #include <Adafruit_NeoMatrix.h>
 #include <Adafruit_NeoPixel.h>
 #include "panel.h"
 
-#define PROGRAM 2
+#define PROGRAM 3
 #define BRIGHTNESS 10
 #define DELAY 10
 #define INIT_COLOR 0
@@ -18,6 +23,8 @@
 
 #define P_COLOR_WHEEL 1
 #define P_COLOR_WIPE 2
+#define P_RAIN 3
+#define P_SIMPLE_SNAKE 4
 
 
 Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(
@@ -115,6 +122,30 @@ void color_wipe_loop() {
 }
 
 /**
+ * Rain Start
+ */
+int g_raindrop_size = 5;
+void rain_loop() {
+    long r = random(0, 255);
+    long g = random(0, 255);
+    long b = random(0, 255);
+    long y = random(0, 8);
+
+    for (int x = g_total_length; x >= -g_raindrop_size; x--) {
+        panel.setPixel(x, y, r, g, b);
+        panel.setPixel(x+g_raindrop_size, y, 0, 0, 0);
+        panel.show();
+        delay(5);
+    }
+}
+
+/**
+ * Simple Snake
+ */
+void simple_snake_loop() {
+}
+
+/**
  *Main code
  */
 
@@ -132,6 +163,14 @@ void loop() {
 
         case P_COLOR_WIPE:
             color_wipe_loop();
+            break;
+
+        case P_RAIN:
+            rain_loop();
+            break;
+
+        case P_SIMPLE_SNAKE:
+            simple_snake_loop();
             break;
     }
 }
