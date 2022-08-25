@@ -1,21 +1,20 @@
 /***
  * TODO:
- * - make sprites move
- * - make sprites work as an array
+ * - test moving, program switcher button
  * - each program will take a brightness input
- * 
+ * - set up brightness mode
  */
 #include <Adafruit_GFX.h>
 #include <Adafruit_NeoMatrix.h>
 #include <Adafruit_NeoPixel.h>
 #include "panel.h"
+#include "buttons.h"
 
 #ifndef SPRITES
 #include "sprites.h"
 #define SPRITES
 #endif
 
-#define PROGRAM 4
 #define BRIGHTNESS 10
 #define DELAY 10
 #define INIT_COLOR_R 0
@@ -30,17 +29,19 @@
 #define TOP_STRAND_PIN 5
 #define BOT_STRAND_PIN 6
 
-#define BUTTON_1_PIN 7
-#define BUTTON_2_PIN 8
-#define BUTTON_3_PIN 9
-#define BUTTON_4_PIN 10
-#define BUTTON_5_PIN 11
+#define BUTTON_UP_PIN 7
+#define BUTTON_DOWN_PIN 8
+#define BUTTON_LEFT_PIN 9
+#define BUTTON_RIGHT_PIN 10
+#define BUTTON_NEXT_PIN 11
 
+#define P_INIT 4
 #define P_COLOR_WHEEL 0
 #define P_COLOR_WIPE 1
 #define P_RAIN 2
 #define P_SIMPLE_SNAKE 3
 #define P_RENDER_SPRITES 4
+#define NUM_PROGRAMS 5
 
 #define P_TEST 10
 
@@ -76,6 +77,7 @@ Panel panel = Panel(
 // Program Globals
 int g_total_length = (GRID_LENGTH + STRAND_LENGTH);
 int g_total_num_pixels = (GRID_LENGTH + STRAND_LENGTH) * GRID_HEIGHT;
+int g_curr_program = P_INIT;
 
 /**
  * Test loop
@@ -287,10 +289,23 @@ void render_sprites_loop() {
 void setup() {
     Serial.begin(9600);
     panel.init(BRIGHTNESS, INIT_COLOR_R, INIT_COLOR_G, INIT_COLOR_B);
+
+    pinMode(BUTTON_UP_PIN, INPUT_PULLUP);
+    pinMode(BUTTON_DOWN_PIN, INPUT_PULLUP);
+    pinMode(BUTTON_LEFT_PIN, INPUT_PULLUP);
+    pinMode(BUTTON_RIGHT_PIN, INPUT_PULLUP);
+    pinMode(BUTTON_NEXT_PIN, INPUT_PULLUP);
 }
 
 void loop() {
-    switch (PROGRAM) {
+    if (pressed(BUTTON_NEXT_PIN)) {
+        g_curr_program++;
+        if (g_curr_program >= NUM_PROGRAMS) {
+            g_curr_program = 0;
+        }
+    }
+
+    switch (g_curr_program) {
         case P_COLOR_WHEEL:
             color_wheel_loop();
             break;
