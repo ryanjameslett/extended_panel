@@ -237,20 +237,20 @@ void simple_snake_loop() {
 void render_sprites_loop() {
 
     byte i,j;
-    Sprite sprite = get_rand_sprite();
+    Sprite* sprite = get_rand_sprite();
     
-    panel.fill(sprite.bg_r, sprite.bg_g, sprite.bg_b);
+    panel.fill(sprite->bg_r, sprite->bg_g, sprite->bg_b);
     
     for (i=0; i<8; i++) {
         for (j=0; j<8; j++) {
-            if (sprite.shape[i][j]) {
+            if (sprite->shape[i][j]) {
                 // flip X-axis
                 panel.setPixel(
                     (i * -1) + 7,
                     j,
-                    sprite.r,
-                    sprite.g,
-                    sprite.b
+                    sprite->r,
+                    sprite->g,
+                    sprite->b
                 );
             }
         }

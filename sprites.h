@@ -24,7 +24,6 @@ struct Sprite {
     uint8_t r, g, b, bg_r, bg_g, bg_b;
 };
 
-
 Sprite smiley = {
     .shape = {
         {0,0,0,1,1,1,0,0},
@@ -82,13 +81,13 @@ Sprite alien = {
     .bg_b = 0
 };
 
-Sprite get_rand_sprite() {
+Sprite* get_rand_sprite() {
     switch (random(0, 3)) {
       case 0:
-        return smiley;
+        return &smiley;
       case 1:
-        return heart;
+        return &heart;
        case 2:
-        return alien;
+        return &alien;
     }
 }

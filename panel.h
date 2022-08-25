@@ -56,7 +56,7 @@ void Panel::init(int brightness, int init_r, int init_g, int init_b) {
 
     uint16_t m_init_color = _matrix->Color(init_r, init_g, init_b);
     uint32_t s_init_color = _top_strand->Color(init_r, init_g, init_b);
-    
+
     _matrix->fillScreen(m_init_color);
     _top_strand->fill(s_init_color);
     _bottom_strand->fill(s_init_color);
