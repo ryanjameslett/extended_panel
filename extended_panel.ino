@@ -15,7 +15,7 @@
 #define SPRITES
 #endif
 
-#define BRIGHTNESS 10
+#define BRIGHTNESS 100
 #define DELAY 10
 #define INIT_COLOR_R 0
 #define INIT_COLOR_G 0
@@ -161,7 +161,7 @@ void color_wipe_loop() {
     long g = color.g;
     long b = color.b;
 
-    for (int x = 0; x < g_total_length; x++) {
+    for (int x = 0; x < g_total_length + 8; x++) {
         // bail out on next program press
         if (pressed(BUTTON_NEXT_PIN)) {
             return;
@@ -174,7 +174,7 @@ void color_wipe_loop() {
         panel.setCol(x-4, r/3, g/3, b/3);
         panel.setCol(x-5, r/4, g/4, b/4);
         panel.setCol(x-6, r/5, g/5, b/5);
-        panel.setCol(x-7, 0, 0, 0);
+        //panel.setCol(x-7, 0, 0, 0);
         panel.show();
         delay(10);
     }
@@ -186,17 +186,18 @@ void color_wipe_loop() {
 int g_raindrop_size = 5;
 
 void rain_loop() {
-    long r = random(0, 256);
-    long g = random(0, 256 - r);
-    long b = random(0, 256 - g);
+    Color color = panel.getColor(random(0, 256));
+    long r = color.r;
+    long g = color.g;
+    long b = color.b;
     long y = random(0, 8);
     // trail color
-    long tr_r = random(0, 256);
-    long tr_g = random(0, 256 - tr_r);
-    long tr_b = random(0, 256 - tr_g);
+    Color tr_color = panel.getColor(random(0, 256));
+    long tr_r = tr_color.r;
+    long tr_g = tr_color.g;
+    long tr_b = tr_color.b;
 
     for (int x = g_total_length; x >= -g_raindrop_size; x--) {
-
         // bail out on next program press
         if (pressed(BUTTON_NEXT_PIN)) {
             return;
@@ -358,6 +359,7 @@ void loop() {
     if (pressed(BUTTON_NEXT_PIN)) {
         g_curr_program++;
         delay(200);
+        panel.fill(0, 0, 0);
         if (g_curr_program >= NUM_PROGRAMS) {
             g_curr_program = 0;
         }
