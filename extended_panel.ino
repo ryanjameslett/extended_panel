@@ -35,7 +35,7 @@
 #define BUTTON_RIGHT_PIN 10
 #define BUTTON_NEXT_PIN 11
 
-#define P_INIT 1
+#define P_INIT 2
 #define P_COLOR_WHEEL 0
 #define P_COLOR_WIPE 1
 #define P_RAIN 2
@@ -157,9 +157,9 @@ void color_wheel_loop() {
 
 void color_wipe_loop() {
     Color color = panel.getColor(random(0, 256));
-    long r = color.r;
-    long g = color.g;
-    long b = color.b;
+    int r = color.r;
+    int g = color.g;
+    int b = color.b;
 
     for (int x = 0; x < g_total_length + 8; x++) {
         // bail out on next program press
@@ -183,19 +183,26 @@ void color_wipe_loop() {
 /**
  * Rain Start
  */
-int g_raindrop_size = 5;
+int g_raindrop_size = 6;
+int g_rain_counter = -1;
 
 void rain_loop() {
-    Color color = panel.getColor(random(0, 256));
-    long r = color.r;
-    long g = color.g;
-    long b = color.b;
-    long y = random(0, 8);
+    // Color color = panel.getColor(random(0, 256));
+    if (g_rain_counter < 0) {
+        g_rain_counter = random(0, 256);
+    }
+    Color color = panel.getColor(g_rain_counter);
+    Serial.println(g_rain_counter);
+    g_rain_counter += 5;
+    if (g_rain_counter > 256) {
+        g_rain_counter -= 256;
+    }
+
+    int r = color.r;
+    int g = color.g;
+    int b = color.b;
+    int y = random(0, 8);
     // trail color
-    Color tr_color = panel.getColor(random(0, 256));
-    long tr_r = tr_color.r;
-    long tr_g = tr_color.g;
-    long tr_b = tr_color.b;
 
     for (int x = g_total_length; x >= -g_raindrop_size; x--) {
         // bail out on next program press
@@ -204,9 +211,14 @@ void rain_loop() {
         }
 
         panel.setPixel(x, y, r, g, b);
-        panel.setPixel(x+g_raindrop_size, y, tr_r, tr_g, tr_b);
+        panel.setPixel(x+1, y, r-(r/4), g-(g/4), b-(b/4));
+        panel.setPixel(x+2, y, r-(r/3), g-(g/3), b-(b/3));
+        panel.setPixel(x+3, y, r/2, g/2, b/2);
+        panel.setPixel(x+4, y, r/3, g/3, b/3);
+        panel.setPixel(x+5, y, r/4, g/4, b/4);
+        // panel.setPixel(x+g_raindrop_size, y, tr_r, tr_g, tr_b);
         panel.show();
-        delay(5);
+        delay(3);
     }
 }
 
@@ -217,13 +229,13 @@ int g_snake_size = 5;
 
 void simple_snake_loop() {
     // snake color
-    long r = random(0, 256);
-    long g = random(0, 256 - r);
-    long b = random(0, 256 - g);
+    int r = random(0, 256);
+    int g = random(0, 256 - r);
+    int b = random(0, 256 - g);
     // trail color
-    long tr_r = random(0, 256);
-    long tr_g = random(0, 256 - tr_r);
-    long tr_b = random(0, 256 - tr_g);
+    int tr_r = random(0, 256);
+    int tr_g = random(0, 256 - tr_r);
+    int tr_b = random(0, 256 - tr_g);
     int x, y;
 
     // move 1
