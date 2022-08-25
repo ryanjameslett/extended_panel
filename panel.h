@@ -112,13 +112,15 @@ void Panel::setCol(int x, uint8_t r, uint8_t g, uint8_t b) {
 void Panel::renderSprite(int x, int y, Sprite* sprite) {
     byte i,j;
     this->fill(sprite->bg_r, sprite->bg_g, sprite->bg_b);
+
+    // draw the sprite
     for (i=0; i<8; i++) {
         for (j=0; j<8; j++) {
             if (sprite->shape[i][j]) {
                 // flip X-axis
                 this->setPixel(
-                    (i * -1) + 7,
-                    j,
+                    x + (i * -1) + 7,
+                    y + j,
                     sprite->r,
                     sprite->g,
                     sprite->b

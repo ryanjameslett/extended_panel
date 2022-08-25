@@ -248,18 +248,28 @@ void simple_snake_loop() {
  */
 void render_sprites_loop() {
     Sprite* sprite = get_rand_sprite();
-    byte x, y, xmin, xmax, ymin, ymax, buffer;
-    byte dx, dy = 1;
-    byte count, max_loops;
+    int x, y, xmin, xmax, ymin, ymax, buffer, buffer_sm;
+    int dx, dy;
+    int count, max_loops;
+
+    dx = dy = 1;
+
+    if (random(0, 10) > 4) {
+        dx = -dx;
+    }
+    if (random(0, 10) > 4) {
+        dy = -dy;
+    }
 
     count = 0;
-    max_loops = 100;
+    max_loops = 200;
 
-    buffer = 5;
+    buffer = 6;
+    buffer_sm = -2;
     xmin = 0 - buffer;
-    xmax = GRID_LENGTH + buffer;
+    xmax = GRID_LENGTH + buffer_sm;
     ymin = 0 - buffer;
-    ymax = GRID_HEIGHT + buffer;
+    ymax = GRID_HEIGHT + buffer_sm;
 
     x = random(xmin, xmax);
     y = random(ymin, ymax);
@@ -267,6 +277,10 @@ void render_sprites_loop() {
     while(count < max_loops) {
         x += dx;
         y += dy;
+
+        Serial.print(x);
+        Serial.print(",");
+        Serial.println(y);
 
         if (x < xmin || x > xmax) {
             dx = -dx;
@@ -279,6 +293,7 @@ void render_sprites_loop() {
         panel.renderSprite(x, y, sprite);
         panel.show();
         delay(50);
+        count++;
     }
 }
 
@@ -295,6 +310,9 @@ void setup() {
     pinMode(BUTTON_LEFT_PIN, INPUT_PULLUP);
     pinMode(BUTTON_RIGHT_PIN, INPUT_PULLUP);
     pinMode(BUTTON_NEXT_PIN, INPUT_PULLUP);
+
+    panel.show();
+    delay(200);
 }
 
 void loop() {
