@@ -59,7 +59,7 @@ Sprite heart = {
     .g = 0,
     .b = 0,
     .bg_r = 0,
-    .bg_g = 125,
+    .bg_g = 80,
     .bg_b = 0
 };
 
@@ -77,20 +77,18 @@ Sprite alien = {
     .r = 0,
     .g = 255,
     .b = 0,
-    .bg_r = 125,
+    .bg_r = 100,
     .bg_g = 0,
     .bg_b = 0
 };
 
 Sprite get_rand_sprite() {
-
-    Sprite sprites[2] = {
-      smiley,
-      alien,
-    };
-  
-    // int len = sizeof(sprites) / sizeof(Sprite);
-    long idx = random(0, 2);
-
-    return sprites[idx];
+    switch (random(0, 3)) {
+      case 0:
+        return smiley;
+      case 1:
+        return heart;
+       case 2:
+        return alien;
+    }
 }

@@ -1,7 +1,10 @@
 /***
  * TODO:
+ * - move sprite render logic into panel
+ * - make sprites move
+ * - make sprites work as an array
  * - each program will take a brightness input
- * -  why does only one arm light up on fill?
+ * 
  */
 #include <Adafruit_GFX.h>
 #include <Adafruit_NeoMatrix.h>
@@ -253,21 +256,6 @@ void render_sprites_loop() {
         }
     }
     
-    panel.show();
-    delay(1500);
-    
-    uint8_t r,g,b;
-    r=125;
-    g=125;
-    b=125;
-    panel.fill(r, g, b);
-    panel.show();
-    delay(1500);
-
-    r=125;
-    g=125;
-    b=125;
-    panel.fill(r, g, b);
     panel.show();
     delay(1500);
 }
