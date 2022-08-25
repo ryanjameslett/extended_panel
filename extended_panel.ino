@@ -10,7 +10,11 @@
 #include <Adafruit_NeoMatrix.h>
 #include <Adafruit_NeoPixel.h>
 #include "panel.h"
+
+#ifndef SPRITES
 #include "sprites.h"
+#define SPRITES
+#endif
 
 #define PROGRAM 5
 #define BRIGHTNESS 10
@@ -235,27 +239,8 @@ void simple_snake_loop() {
  * Render Sprites Loop
  */
 void render_sprites_loop() {
-
-    byte i,j;
     Sprite* sprite = get_rand_sprite();
-    
-    panel.fill(sprite->bg_r, sprite->bg_g, sprite->bg_b);
-    
-    for (i=0; i<8; i++) {
-        for (j=0; j<8; j++) {
-            if (sprite->shape[i][j]) {
-                // flip X-axis
-                panel.setPixel(
-                    (i * -1) + 7,
-                    j,
-                    sprite->r,
-                    sprite->g,
-                    sprite->b
-                );
-            }
-        }
-    }
-    
+    panel.renderSprite(0, 0, sprite);
     panel.show();
     delay(1500);
 }

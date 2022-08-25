@@ -2,6 +2,11 @@
 #include <Adafruit_NeoMatrix.h>
 #include <Adafruit_NeoPixel.h>
 
+#ifndef SPRITES
+#include "sprites.h"
+#define SPRITES
+#endif
+
 #define GRID_HEIGHT 8
 #define GRID_LENGTH 32
 #define STRIP_LENGTH 58
@@ -31,7 +36,7 @@ class Panel
         void setPixel(int x, int y, uint16_t color);
         void setCol(int x, uint8_t r, uint8_t g, uint8_t b);
         void fill(int r, int g, int b);
-        void renderSprite(int x, int y, bool sprite[8][8], uint8_t r, uint8_t g, uint8_t b);
+        void renderSprite(int x, int y, Sprite* sprite);
 };
 
 Panel::Panel(
@@ -104,8 +109,23 @@ void Panel::setCol(int x, uint8_t r, uint8_t g, uint8_t b) {
     }
 }
 
-void Panel::renderSprite(int x, int y, bool sprite[8][8], uint8_t r, uint8_t g, uint8_t b) {
-
+void Panel::renderSprite(int x, int y, Sprite* sprite) {
+    byte i,j;
+    this->fill(sprite->bg_r, sprite->bg_g, sprite->bg_b);
+    for (i=0; i<8; i++) {
+        for (j=0; j<8; j++) {
+            if (sprite->shape[i][j]) {
+                // flip X-axis
+                this->setPixel(
+                    (i * -1) + 7,
+                    j,
+                    sprite->r,
+                    sprite->g,
+                    sprite->b
+                );
+            }
+        }
+    }
 }
 
 void Panel::show() {
