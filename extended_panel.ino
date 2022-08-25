@@ -19,7 +19,7 @@
 #define DELAY 10
 #define INIT_COLOR_R 0
 #define INIT_COLOR_G 0
-#define INIT_COLOR_B 255
+#define INIT_COLOR_B 0
 
 #define GRID_HEIGHT 8
 #define GRID_LENGTH 32
@@ -35,7 +35,7 @@
 #define BUTTON_RIGHT_PIN 10
 #define BUTTON_NEXT_PIN 11
 
-#define P_INIT 4
+#define P_INIT 0
 #define P_COLOR_WHEEL 0
 #define P_COLOR_WIPE 1
 #define P_RAIN 2
@@ -90,14 +90,14 @@ void test_loop() {
     panel.fill(r, g, b);
     panel.show();
     delay(1000);
-    
+
     r=0;
     g=255;
     b=0;
     panel.fill(r, g, b);
     panel.show();
     delay(1000);
-    
+
     r=0;
     g=0;
     b=255;
@@ -132,6 +132,11 @@ void color_wheel_loop() {
             for (int16_t y = 0; y < GRID_HEIGHT; y++) {
                 byte tmp = 0;
 
+                // bail out on next program press
+                if (pressed(BUTTON_NEXT_PIN)) {
+                    return;
+                }
+
                 tmp = ((g_color_counter * 256 / g_total_length) + j) & 255;
                 set_color_pixel(x, y, tmp);
 
@@ -153,6 +158,11 @@ void color_wheel_loop() {
 void color_wipe_loop() {
     for (int count = 0; count < 3; count++) {
         for (int x = 0; x < g_total_length; x++) {
+            // bail out on next program press
+            if (pressed(BUTTON_NEXT_PIN)) {
+                return;
+            }
+
             if (count % 3 == 0) {
                 panel.setCol(x, 255, 0, 0);
             }
@@ -184,6 +194,12 @@ void rain_loop() {
     long tr_b = random(0, 256 - tr_g);
 
     for (int x = g_total_length; x >= -g_raindrop_size; x--) {
+
+        // bail out on next program press
+        if (pressed(BUTTON_NEXT_PIN)) {
+            return;
+        }
+
         panel.setPixel(x, y, r, g, b);
         panel.setPixel(x+g_raindrop_size, y, tr_r, tr_g, tr_b);
         panel.show();
@@ -209,6 +225,10 @@ void simple_snake_loop() {
 
     // move 1
     for (x = g_total_length; x >= -g_snake_size; x--) {
+        // bail out on next program press
+        if (pressed(BUTTON_NEXT_PIN)) {
+            return;
+        }
         panel.setPixel(x, 0, r, g, b);
         panel.setPixel(x+g_snake_size, 0, tr_r, tr_g, tr_b);
         panel.show();
@@ -218,6 +238,10 @@ void simple_snake_loop() {
     // move 2 - 7
     for (y = 1; y < GRID_HEIGHT - 1; y++) {
         for (x = 0; x < GRID_LENGTH + g_snake_size; x++) {
+            // bail out on next program press
+            if (pressed(BUTTON_NEXT_PIN)) {
+                return;
+            }
             panel.setPixel(x, y, r, g, b);
             panel.setPixel(x-g_snake_size, y, tr_r, tr_g, tr_b);
             panel.show();
@@ -227,6 +251,10 @@ void simple_snake_loop() {
         y++;
 
         for (x = GRID_LENGTH; x >= 0 - g_snake_size; x--) {
+            // bail out on next program press
+            if (pressed(BUTTON_NEXT_PIN)) {
+                return;
+            }
             panel.setPixel(x, y, r, g, b);
             panel.setPixel(x+g_snake_size, y, tr_r, tr_g, tr_b);
             panel.show();
@@ -236,6 +264,10 @@ void simple_snake_loop() {
 
     // move 8
     for (x = 0; x < g_total_length + g_snake_size; x++) {
+        // bail out on next program press
+        if (pressed(BUTTON_NEXT_PIN)) {
+            return;
+        }
         panel.setPixel(x, 7, r, g, b);
         panel.setPixel(x-g_snake_size, 7, tr_r, tr_g, tr_b);
         panel.show();
@@ -275,6 +307,11 @@ void render_sprites_loop() {
     y = random(ymin, ymax);
 
     while(count < max_loops) {
+        // bail out on next program press
+        if (pressed(BUTTON_NEXT_PIN)) {
+            return;
+        }
+
         x += dx;
         y += dy;
 
@@ -292,7 +329,7 @@ void render_sprites_loop() {
 
         panel.renderSprite(x, y, sprite);
         panel.show();
-        delay(50);
+        delay(80);
         count++;
     }
 }
@@ -318,6 +355,7 @@ void setup() {
 void loop() {
     if (pressed(BUTTON_NEXT_PIN)) {
         g_curr_program++;
+        delay(200);
         if (g_curr_program >= NUM_PROGRAMS) {
             g_curr_program = 0;
         }

@@ -62,6 +62,7 @@ Sprite heart = {
     .bg_b = 0
 };
 
+/*
 Sprite alien = {
     .shape = {
         {0,0,0,0,0,0,0,0},
@@ -80,7 +81,27 @@ Sprite alien = {
     .bg_g = 0,
     .bg_b = 0
 };
+*/
+Sprite alien = {
+    .shape = {
+        {0,0,1,1,1,1,0,0},
+        {0,1,0,1,1,0,1,0},
+        {0,1,0,1,1,0,1,0},
+        {0,0,1,1,1,1,0,0},
+        {0,1,1,1,1,1,1,0},
+        {1,0,0,0,1,0,0,1},
+        {0,1,0,1,0,0,1,0},
+        {1,0,0,0,1,0,0,1}
+    },
+    .r = 0,
+    .g = 255,
+    .b = 0,
+    .bg_r = 100,
+    .bg_g = 0,
+    .bg_b = 0
+};
 
+/*
 Sprite eyeball = {
     .shape = {
         {0,0,0,1,1,0,0,0},
@@ -95,20 +116,20 @@ Sprite eyeball = {
     .r = 255,
     .g = 255,
     .b = 255,
-    .bg_r = 0,
+    .bg_r = 100,
     .bg_g = 0,
     .bg_b = 0
 };
-
+*/
 Sprite* get_rand_sprite() {
-    switch (random(0, 4)) {
+    switch (random(0, 3)) {
         case 0:
             return &smiley;
         case 1:
             return &heart;
         case 2:
             return &alien;
-        case 3:
-            return &eyeball;
+        //case 3:
+        //    return &eyeball;
     }
 }
