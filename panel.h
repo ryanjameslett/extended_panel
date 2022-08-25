@@ -11,11 +11,10 @@
 #define GRID_LENGTH 32
 #define STRIP_LENGTH 58
 
-/**
- * TODO:
- * light rows
- * light cols
- */
+
+struct Color {
+    long r, g, b;
+};
 
 class Panel
 {
@@ -37,6 +36,7 @@ class Panel
         void setCol(int x, uint8_t r, uint8_t g, uint8_t b);
         void fill(int r, int g, int b);
         void renderSprite(int x, int y, Sprite* sprite);
+        Color getColor(int wheel);
 };
 
 Panel::Panel(
@@ -134,4 +134,17 @@ void Panel::show() {
   _matrix->show();
   _top_strand->show();
   _bottom_strand->show();
+}
+
+Color Panel::getColor(int wheel) {
+    wheel = 255 - wheel;
+    if (wheel < 85) {
+        return (Color){.r = 255 - wheel * 3, .g = 0, .b = wheel * 3};
+    }
+    if(wheel < 170) {
+        wheel -= 85;
+        return (Color){.r = 0, .g = wheel * 3, .b = 255 - wheel * 3};
+    }
+    wheel -= 170;
+    return (Color){.r = wheel * 3, .g = 255 - wheel * 3, .b = 0};
 }

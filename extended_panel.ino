@@ -1,6 +1,6 @@
 /***
  * TODO:
- * - test moving, program switcher button
+ *
  * - each program will take a brightness input
  * - set up brightness mode
  */
@@ -35,7 +35,7 @@
 #define BUTTON_RIGHT_PIN 10
 #define BUTTON_NEXT_PIN 11
 
-#define P_INIT 0
+#define P_INIT 1
 #define P_COLOR_WHEEL 0
 #define P_COLOR_WIPE 1
 #define P_RAIN 2
@@ -156,25 +156,27 @@ void color_wheel_loop() {
  */
 
 void color_wipe_loop() {
-    for (int count = 0; count < 3; count++) {
-        for (int x = 0; x < g_total_length; x++) {
-            // bail out on next program press
-            if (pressed(BUTTON_NEXT_PIN)) {
-                return;
-            }
+    Color color = panel.getColor(random(0, 256));
+    long r = color.r;
+    long g = color.g;
+    long b = color.b;
 
-            if (count % 3 == 0) {
-                panel.setCol(x, 255, 0, 0);
-            }
-            else if (count % 3 == 1) {
-                panel.setCol(x, 0, 255, 0);
-            }
-            else {
-                panel.setCol(x, 0, 0, 255);
-            }
-            panel.show();
-            delay(20);
+    for (int x = 0; x < g_total_length; x++) {
+        // bail out on next program press
+        if (pressed(BUTTON_NEXT_PIN)) {
+            return;
         }
+
+        panel.setCol(x, r, g, b);
+        panel.setCol(x-1, r-(r/4), g-(g/4), b-(b/4));
+        panel.setCol(x-2, r-(r/3), g-(g/3), b-(b/3));
+        panel.setCol(x-3, r/2, g/2, b/2);
+        panel.setCol(x-4, r/3, g/3, b/3);
+        panel.setCol(x-5, r/4, g/4, b/4);
+        panel.setCol(x-6, r/5, g/5, b/5);
+        panel.setCol(x-7, 0, 0, 0);
+        panel.show();
+        delay(10);
     }
 }
 
