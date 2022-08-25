@@ -7,8 +7,9 @@
 #include <Adafruit_NeoMatrix.h>
 #include <Adafruit_NeoPixel.h>
 #include "panel.h"
+#include "sprites.h"
 
-#define PROGRAM 4
+#define PROGRAM 5
 #define BRIGHTNESS 10
 #define DELAY 10
 #define INIT_COLOR 0
@@ -25,6 +26,7 @@
 #define P_COLOR_WIPE 2
 #define P_RAIN 3
 #define P_SIMPLE_SNAKE 4
+#define P_RENDER_SPRITES 5
 
 
 Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(
@@ -197,6 +199,25 @@ void simple_snake_loop() {
 }
 
 /**
+ * Render Sprites Loop
+ */
+
+void render_sprites_loop() {
+    byte i,j;
+
+    for (i=0; i<8; i++) {
+        for (j=0; j<8; j++) {
+            if (smiley[i][j]) {
+                // flip X-axis
+                panel.setPixel((i * -1) + 7, j, 255, 255, 0);
+            }
+        }
+    }
+    panel.show();
+    delay(100);
+}
+
+/**
  *Main code
  */
 
@@ -222,6 +243,10 @@ void loop() {
 
         case P_SIMPLE_SNAKE:
             simple_snake_loop();
+            break;
+
+        case P_RENDER_SPRITES:
+            render_sprites_loop();
             break;
     }
 }
