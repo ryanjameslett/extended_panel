@@ -21,8 +21,7 @@ Sprite tpl = {
 
 struct Sprite {
     bool shape[8][8];
-    uint8_t r, g, b;
-    uint8_t bg_r, bg_g, bg_b;
+    uint8_t r, g, b, bg_r, bg_g, bg_b;
 };
 
 
@@ -41,8 +40,8 @@ Sprite smiley = {
     .g = 255,
     .b = 0,
     .bg_r = 0,
-    .bg_g = 255,
-    .bg_b = 0
+    .bg_g = 0,
+    .bg_b = 125
 };
 
 Sprite heart = {
@@ -60,8 +59,8 @@ Sprite heart = {
     .g = 0,
     .b = 0,
     .bg_r = 0,
-    .bg_g = 0,
-    .bg_b = 255
+    .bg_g = 125,
+    .bg_b = 0
 };
 
 Sprite alien = {
@@ -78,20 +77,20 @@ Sprite alien = {
     .r = 0,
     .g = 255,
     .b = 0,
-    .bg_r = 255,
+    .bg_r = 125,
     .bg_g = 0,
     .bg_b = 0
 };
 
-Sprite sprites[] = {
-    smiley,
-    heart,
-    alien
-};
-
 Sprite get_rand_sprite() {
-    int len = sizeof(sprites) / sizeof(Sprite);
-    long idx = random(0, len);
+
+    Sprite sprites[2] = {
+      smiley,
+      alien,
+    };
+  
+    // int len = sizeof(sprites) / sizeof(Sprite);
+    long idx = random(0, 2);
 
     return sprites[idx];
 }

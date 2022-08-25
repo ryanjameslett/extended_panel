@@ -1,7 +1,7 @@
 /***
  * TODO:
  * - each program will take a brightness input
- *
+ * -  why does only one arm light up on fill?
  */
 #include <Adafruit_GFX.h>
 #include <Adafruit_NeoMatrix.h>
@@ -12,7 +12,9 @@
 #define PROGRAM 5
 #define BRIGHTNESS 10
 #define DELAY 10
-#define INIT_COLOR 0
+#define INIT_COLOR_R 0
+#define INIT_COLOR_G 0
+#define INIT_COLOR_B 255
 
 #define GRID_HEIGHT 8
 #define GRID_LENGTH 32
@@ -22,6 +24,7 @@
 #define TOP_STRAND_PIN 5
 #define BOT_STRAND_PIN 6
 
+#define P_TEST 0
 #define P_COLOR_WHEEL 1
 #define P_COLOR_WIPE 2
 #define P_RAIN 3
@@ -60,6 +63,33 @@ Panel panel = Panel(
 // Program Globals
 int g_total_length = (GRID_LENGTH + STRAND_LENGTH);
 int g_total_num_pixels = (GRID_LENGTH + STRAND_LENGTH) * GRID_HEIGHT;
+
+/**
+ * Test loop
+ */
+void test_loop() {
+    uint8_t r,g,b;
+    r=255;
+    g=0;
+    b=0;
+    panel.fill(r, g, b);
+    panel.show();
+    delay(1000);
+    
+    r=0;
+    g=255;
+    b=0;
+    panel.fill(r, g, b);
+    panel.show();
+    delay(1000);
+    
+    r=0;
+    g=0;
+    b=255;
+    panel.fill(r, g, b);
+    panel.show();
+    delay(1000);
+}
 
 /***
  * Color Wheel Start
@@ -202,11 +232,12 @@ void simple_snake_loop() {
  * Render Sprites Loop
  */
 void render_sprites_loop() {
-    byte i,j;
 
+    byte i,j;
     Sprite sprite = get_rand_sprite();
-    panel.fill(matrix.Color(sprite.bg_r,sprite.bg_g,sprite.bg_g));
-    panel.show();
+    
+    panel.fill(sprite.bg_r, sprite.bg_g, sprite.bg_b);
+    
     for (i=0; i<8; i++) {
         for (j=0; j<8; j++) {
             if (sprite.shape[i][j]) {
@@ -221,6 +252,22 @@ void render_sprites_loop() {
             }
         }
     }
+    
+    panel.show();
+    delay(1500);
+    
+    uint8_t r,g,b;
+    r=125;
+    g=125;
+    b=125;
+    panel.fill(r, g, b);
+    panel.show();
+    delay(1500);
+
+    r=125;
+    g=125;
+    b=125;
+    panel.fill(r, g, b);
     panel.show();
     delay(1500);
 }
@@ -230,12 +277,16 @@ void render_sprites_loop() {
  */
 
 void setup() {
-    // Serial.begin(9600);
-    panel.init(BRIGHTNESS, INIT_COLOR);
+    Serial.begin(9600);
+    panel.init(BRIGHTNESS, INIT_COLOR_R, INIT_COLOR_G, INIT_COLOR_B);
 }
 
 void loop() {
     switch (PROGRAM) {
+        case P_TEST:
+            test_loop();
+            break;
+
         case P_COLOR_WHEEL:
             color_wheel_loop();
             break;

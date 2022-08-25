@@ -17,7 +17,7 @@ class Panel
     private:
         Adafruit_NeoMatrix *_matrix;
         Adafruit_NeoPixel *_top_strand, *_bottom_strand;
-        int _brightness, _init_value;
+        int _brightness;
 
     public:
         Panel(Adafruit_NeoMatrix *matrix,
@@ -25,12 +25,12 @@ class Panel
               Adafruit_NeoPixel *bottom
         );
 
-        void init(int brightness, int init_value);
+        void init(int brightness, int init_r, int init_g, int init_b);
         void show();
         void setPixel(int x, int y, uint8_t r, uint8_t g, uint8_t b);
         void setPixel(int x, int y, uint16_t color);
         void setCol(int x, uint8_t r, uint8_t g, uint8_t b);
-        void fill(uint16_t color);
+        void fill(int r, int g, int b);
         void renderSprite(int x, int y, bool sprite[8][8], uint8_t r, uint8_t g, uint8_t b);
 };
 
@@ -44,9 +44,8 @@ Panel::Panel(
     _bottom_strand = bottom;
 }
 
-void Panel::init(int brightness, int init_value) {
+void Panel::init(int brightness, int init_r, int init_g, int init_b) {
     _brightness = brightness;
-    _init_value = init_value;
 
     _matrix->begin();
     _matrix->setBrightness(_brightness);
@@ -54,15 +53,21 @@ void Panel::init(int brightness, int init_value) {
     _top_strand->setBrightness(_brightness);
     _bottom_strand->begin();
     _bottom_strand->setBrightness(_brightness);
-    _matrix->fillScreen(_init_value);
-    _top_strand->fill(_init_value);
-    _bottom_strand->fill(_init_value);
+
+    uint16_t m_init_color = _matrix->Color(init_r, init_g, init_b);
+    uint32_t s_init_color = _top_strand->Color(init_r, init_g, init_b);
+    
+    _matrix->fillScreen(m_init_color);
+    _top_strand->fill(s_init_color);
+    _bottom_strand->fill(s_init_color);
 }
 
-void Panel::fill(uint16_t color) {
-    _matrix->fillScreen(_init_value);
-    _top_strand->fill(_init_value);
-    _bottom_strand->fill(_init_value);
+void Panel::fill(int r, int g, int b) {
+    uint16_t m_color = _matrix->Color(r, g, b);
+    uint32_t s_color = _top_strand->Color(r, g, b);
+    _matrix->fillScreen(m_color);
+    _bottom_strand->fill(s_color);
+    _top_strand->fill(s_color);
 }
 
 void Panel::setPixel(int x, int y, uint8_t r, uint8_t g, uint8_t b) {
