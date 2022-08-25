@@ -1,6 +1,5 @@
 /***
  * TODO:
- * - move sprite render logic into panel
  * - make sprites move
  * - make sprites work as an array
  * - each program will take a brightness input
@@ -240,9 +239,38 @@ void simple_snake_loop() {
  */
 void render_sprites_loop() {
     Sprite* sprite = get_rand_sprite();
-    panel.renderSprite(0, 0, sprite);
-    panel.show();
-    delay(1500);
+    byte x, y, xmin, xmax, ymin, ymax, buffer;
+    byte dx, dy = 1;
+    byte count, max_loops;
+
+    count = 0;
+    max_loops = 100;
+
+    buffer = 5;
+    xmin = 0 - buffer;
+    xmax = GRID_LENGTH + buffer;
+    ymin = 0 - buffer;
+    ymax = GRID_HEIGHT + buffer;
+
+    x = random(xmin, xmax);
+    y = random(ymin, ymax);
+
+    while(count < max_loops) {
+        x += dx;
+        y += dy;
+
+        if (x < xmin || x > xmax) {
+            dx = -dx;
+        }
+
+        if (y < ymin || y > ymax) {
+            dy = -dy;
+        }
+
+        panel.renderSprite(x, y, sprite);
+        panel.show();
+        delay(50);
+    }
 }
 
 /**
