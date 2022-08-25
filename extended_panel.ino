@@ -201,20 +201,28 @@ void simple_snake_loop() {
 /**
  * Render Sprites Loop
  */
-
 void render_sprites_loop() {
     byte i,j;
 
+    Sprite sprite = get_rand_sprite();
+    panel.fill(matrix.Color(sprite.bg_r,sprite.bg_g,sprite.bg_g));
+    panel.show();
     for (i=0; i<8; i++) {
         for (j=0; j<8; j++) {
-            if (smiley[i][j]) {
+            if (sprite.shape[i][j]) {
                 // flip X-axis
-                panel.setPixel((i * -1) + 7, j, 255, 255, 0);
+                panel.setPixel(
+                    (i * -1) + 7,
+                    j,
+                    sprite.r,
+                    sprite.g,
+                    sprite.b
+                );
             }
         }
     }
     panel.show();
-    delay(100);
+    delay(1500);
 }
 
 /**
@@ -222,12 +230,11 @@ void render_sprites_loop() {
  */
 
 void setup() {
-    Serial.begin(9600);
+    // Serial.begin(9600);
     panel.init(BRIGHTNESS, INIT_COLOR);
 }
 
 void loop() {
-    Serial.println("Loop");
     switch (PROGRAM) {
         case P_COLOR_WHEEL:
             color_wheel_loop();

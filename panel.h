@@ -28,8 +28,10 @@ class Panel
         void init(int brightness, int init_value);
         void show();
         void setPixel(int x, int y, uint8_t r, uint8_t g, uint8_t b);
-        void setPixel(int x, int y, uint32_t color);
+        void setPixel(int x, int y, uint16_t color);
         void setCol(int x, uint8_t r, uint8_t g, uint8_t b);
+        void fill(uint16_t color);
+        void renderSprite(int x, int y, bool sprite[8][8], uint8_t r, uint8_t g, uint8_t b);
 };
 
 Panel::Panel(
@@ -57,6 +59,12 @@ void Panel::init(int brightness, int init_value) {
     _bottom_strand->fill(_init_value);
 }
 
+void Panel::fill(uint16_t color) {
+    _matrix->fillScreen(_init_value);
+    _top_strand->fill(_init_value);
+    _bottom_strand->fill(_init_value);
+}
+
 void Panel::setPixel(int x, int y, uint8_t r, uint8_t g, uint8_t b) {
     if (x < GRID_LENGTH) {
         _matrix->drawPixel(x, y, _matrix->Color(r,g,b));
@@ -71,7 +79,7 @@ void Panel::setPixel(int x, int y, uint8_t r, uint8_t g, uint8_t b) {
     }
 }
 
-void Panel::setPixel(int x, int y, uint32_t color) {
+void Panel::setPixel(int x, int y, uint16_t color) {
     if (x < GRID_LENGTH) {
         _matrix->drawPixel(x, y, color);
     }
@@ -89,6 +97,10 @@ void Panel::setCol(int x, uint8_t r, uint8_t g, uint8_t b) {
     for (int y = 0; y < GRID_HEIGHT; y++) {
         Panel::setPixel(x, y, r, g, b);
     }
+}
+
+void Panel::renderSprite(int x, int y, bool sprite[8][8], uint8_t r, uint8_t g, uint8_t b) {
+
 }
 
 void Panel::show() {
