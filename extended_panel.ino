@@ -8,7 +8,7 @@
 #include <Adafruit_NeoPixel.h>
 #include "panel.h"
 
-#define PROGRAM 3
+#define PROGRAM 4
 #define BRIGHTNESS 10
 #define DELAY 10
 #define INIT_COLOR 0
