@@ -15,7 +15,7 @@
 #define SPRITES
 #endif
 
-#define PROGRAM 5
+#define PROGRAM 4
 #define BRIGHTNESS 10
 #define DELAY 10
 #define INIT_COLOR_R 0
@@ -30,12 +30,19 @@
 #define TOP_STRAND_PIN 5
 #define BOT_STRAND_PIN 6
 
-#define P_TEST 0
-#define P_COLOR_WHEEL 1
-#define P_COLOR_WIPE 2
-#define P_RAIN 3
-#define P_SIMPLE_SNAKE 4
-#define P_RENDER_SPRITES 5
+#define BUTTON_1_PIN 7
+#define BUTTON_2_PIN 8
+#define BUTTON_3_PIN 9
+#define BUTTON_4_PIN 10
+#define BUTTON_5_PIN 11
+
+#define P_COLOR_WHEEL 0
+#define P_COLOR_WIPE 1
+#define P_RAIN 2
+#define P_SIMPLE_SNAKE 3
+#define P_RENDER_SPRITES 4
+
+#define P_TEST 10
 
 
 Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(
@@ -284,10 +291,6 @@ void setup() {
 
 void loop() {
     switch (PROGRAM) {
-        case P_TEST:
-            test_loop();
-            break;
-
         case P_COLOR_WHEEL:
             color_wheel_loop();
             break;
@@ -307,5 +310,11 @@ void loop() {
         case P_RENDER_SPRITES:
             render_sprites_loop();
             break;
+
+        // Test and diagnostic programs
+        case P_TEST:
+            test_loop();
+            break;
+
     }
 }
