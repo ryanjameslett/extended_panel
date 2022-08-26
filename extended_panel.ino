@@ -1,9 +1,3 @@
-/***
- * TODO:
- *
- * - each program will take a brightness input
- * - set up brightness mode
- */
 #include <Adafruit_GFX.h>
 #include <Adafruit_NeoMatrix.h>
 #include <Adafruit_NeoPixel.h>
@@ -25,6 +19,7 @@
 #define GRID_LENGTH 32
 #define STRAND_LENGTH 58
 
+#define BRIGHTNESS_PIN 0
 #define GRID_PIN 3
 #define TOP_STRAND_PIN 5
 #define BOT_STRAND_PIN 6
@@ -78,6 +73,7 @@ Panel panel = Panel(
 int g_total_length = (GRID_LENGTH + STRAND_LENGTH);
 int g_total_num_pixels = (GRID_LENGTH + STRAND_LENGTH) * GRID_HEIGHT;
 int g_curr_program = P_INIT;
+byte g_curr_brightness = BRIGHTNESS;
 
 /**
  * Test loop
@@ -353,9 +349,22 @@ void render_sprites_loop() {
  *Main code
  */
 
+int get_brightness() {
+    return (floor(analogRead(BRIGHTNESS_PIN) / 1012.0 * 255 / 10) * 10) + 5;
+}
+
+void update_brightness() {
+    byte tmp = get_brightness();
+    if (tmp != g_curr_brightness) {
+        g_curr_brightness = tmp;
+        panel.setBrightness(g_curr_brightness);
+    }
+}
+
 void setup() {
     Serial.begin(9600);
-    panel.init(BRIGHTNESS, INIT_COLOR_R, INIT_COLOR_G, INIT_COLOR_B);
+    g_curr_brightness = get_brightness();
+    panel.init(g_curr_brightness, INIT_COLOR_R, INIT_COLOR_G, INIT_COLOR_B);
 
     pinMode(BUTTON_UP_PIN, INPUT_PULLUP);
     pinMode(BUTTON_DOWN_PIN, INPUT_PULLUP);
@@ -368,6 +377,9 @@ void setup() {
 }
 
 void loop() {
+
+    update_brightness();
+
     if (pressed(BUTTON_NEXT_PIN)) {
         g_curr_program++;
         delay(200);

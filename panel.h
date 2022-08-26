@@ -37,6 +37,7 @@ class Panel
         void fill(int r, int g, int b);
         void renderSprite(int x, int y, Sprite* sprite);
         Color getColor(int wheel);
+        void setBrightness(byte value);
 };
 
 Panel::Panel(
@@ -65,6 +66,13 @@ void Panel::init(int brightness, int init_r, int init_g, int init_b) {
     _matrix->fillScreen(m_init_color);
     _top_strand->fill(s_init_color);
     _bottom_strand->fill(s_init_color);
+}
+
+
+void Panel::setBrightness(byte value) {
+    _matrix->setBrightness(value);
+    _top_strand->setBrightness(value);
+    _bottom_strand->setBrightness(value);
 }
 
 void Panel::fill(int r, int g, int b) {
