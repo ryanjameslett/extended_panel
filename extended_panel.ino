@@ -345,7 +345,7 @@ void render_sprites_loop() {
 
     while(count < max_loops) {
         // bail out on next program press
-        if (pressed(BUTTON_NEXT_PIN)) {
+        if (interrupt()) {
             return;
         }
 
