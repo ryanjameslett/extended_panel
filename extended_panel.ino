@@ -179,7 +179,6 @@ void color_wipe_loop() {
         d_pad = 0;
     }
 
-    Serial.println(wipe_forward);
     if (wipe_forward) {
         for (x = 0; x < g_total_length + 8; x++) {
             if (interrupt()) { return; }
@@ -213,39 +212,30 @@ void color_wipe_loop() {
 /**
  * Rain Start
  */
-int g_raindrop_size = 6;
-int g_rain_counter = -1;
+#define g_raindrop_size 6
+byte g_rain_counter = 255;
 
 void rain_loop() {
-    // Color color = panel.getColor(random(0, 256));
-    if (g_rain_counter < 0) {
-        g_rain_counter = random(0, 256);
-    }
-    Color color = panel.getColor(g_rain_counter);
-    g_rain_counter += 5;
-    if (g_rain_counter > 256) {
-        g_rain_counter -= 256;
+    if (g_rain_counter == 255) {
+        g_rain_counter = random(0, 254);
     }
 
-    int r = color.r;
-    int g = color.g;
-    int b = color.b;
-    int y = random(0, 8);
-    // trail color
+    color = panel.getColor(g_rain_counter);
+    g_rain_counter += 5; // will auto-loop because this is a byte
+    y = random(0, 8);
 
     for (int x = g_total_length; x >= -g_raindrop_size; x--) {
         // bail out on next program press
-        if (pressed(BUTTON_NEXT_PIN)) {
+        if (interrupt()) {
             return;
         }
 
-        panel.setPixel(x, y, r, g, b);
-        panel.setPixel(x+1, y, r-(r/4), g-(g/4), b-(b/4));
-        panel.setPixel(x+2, y, r-(r/3), g-(g/3), b-(b/3));
-        panel.setPixel(x+3, y, r/2, g/2, b/2);
-        panel.setPixel(x+4, y, r/3, g/3, b/3);
-        panel.setPixel(x+5, y, r/4, g/4, b/4);
-        // panel.setPixel(x+g_raindrop_size, y, tr_r, tr_g, tr_b);
+        panel.setPixel(x, y, color.r, color.g, color.b);
+        panel.setPixel(x+1, y, color.r-(color.r/4), color.g-(color.g/4), color.b-(color.b/4));
+        panel.setPixel(x+2, y, color.r-(color.r/3), color.g-(color.g/3), color.b-(color.b/3));
+        panel.setPixel(x+3, y, color.r/2, color.g/2, color.b/2);
+        panel.setPixel(x+4, y, color.r/3, color.g/3, color.b/3);
+        panel.setPixel(x+5, y, color.r/4, color.g/4, color.b/4);
         panel.show();
         delay(3);
     }
