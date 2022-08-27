@@ -9,7 +9,8 @@
 #define SPRITES
 #endif
 
-#define BRIGHTNESS 100
+#define BRIGHTNESS 127
+#define BRIGHTNESS_INCR 32
 #define DELAY 10
 #define INIT_COLOR_R 0
 #define INIT_COLOR_G 0
@@ -19,7 +20,6 @@
 #define GRID_LENGTH 32
 #define STRAND_LENGTH 58
 
-#define BRIGHTNESS_PIN 0
 #define GRID_PIN 4
 #define TOP_STRAND_PIN 2
 #define BOT_STRAND_PIN 3
@@ -74,6 +74,8 @@ Panel panel = Panel(
 int g_total_length = (GRID_LENGTH + STRAND_LENGTH);
 int g_total_num_pixels = (GRID_LENGTH + STRAND_LENGTH) * GRID_HEIGHT;
 int g_curr_program = P_INIT;
+
+bool g_button_brightness_pressed = false;
 byte g_curr_brightness = BRIGHTNESS;
 
 /**
@@ -159,8 +161,7 @@ void color_wipe_loop() {
     int b = color.b;
 
     for (int x = 0; x < g_total_length + 8; x++) {
-        // bail out on next program press
-        if (pressed(BUTTON_NEXT_PIN)) {
+        if (interrupt()) {
             return;
         }
 
@@ -350,21 +351,38 @@ void render_sprites_loop() {
  *Main code
  */
 
-int get_brightness() {
-    return (floor(analogRead(BRIGHTNESS_PIN) / 1012.0 * 255 / 10) * 10) + 5;
+/**
+ * This code updates things during loops so that we can get button presses
+ * and do things like update brightness from within loops
+ * Returns true if the program needs to exit
+ */
+bool interrupt() {
+    if (digitalRead(BUTTON_NEXT_PIN) == LOW) {
+        return true;
+    }
+
+    update_brightness(); 
 }
 
 void update_brightness() {
-    byte tmp = get_brightness();
-    if (tmp != g_curr_brightness) {
-        g_curr_brightness = tmp;
+    Serial.println(g_curr_brightness);
+    g_button_brightness_pressed = false;
+    while (digitalRead(BUTTON_BRIGHTNESS_PIN) == LOW) {
+        g_button_brightness_pressed = true;
+    }
+
+    if (g_button_brightness_pressed) {
+        g_curr_brightness = g_curr_brightness + BRIGHTNESS_INCR;
+        if (g_curr_brightness > 256) {
+            g_curr_brightness -+ 256;
+        }
         panel.setBrightness(g_curr_brightness);
     }
 }
 
 void setup() {
     Serial.begin(9600);
-    g_curr_brightness = get_brightness();
+    Serial.println("Setup");
     panel.init(g_curr_brightness, INIT_COLOR_R, INIT_COLOR_G, INIT_COLOR_B);
 
     pinMode(BUTTON_UP_PIN, INPUT_PULLUP);
@@ -378,9 +396,7 @@ void setup() {
 }
 
 void loop() {
-
-    update_brightness();
-
+    Serial.println("Loop");
     if (pressed(BUTTON_NEXT_PIN)) {
         g_curr_program++;
         delay(200);
