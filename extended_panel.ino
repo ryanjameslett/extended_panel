@@ -368,17 +368,17 @@ bool interrupt() {
 
 void update_brightness() {
     Serial.println(g_curr_brightness);
-    g_button_brightness_pressed = false;
-    while (digitalRead(BUTTON_BRIGHTNESS_PIN) == LOW) {
+
+    if (digitalRead(BUTTON_BRIGHTNESS_PIN) == LOW) {
         g_button_brightness_pressed = true;
     }
-
-    if (g_button_brightness_pressed) {
+    else if (g_button_brightness_pressed) {
         g_curr_brightness = g_curr_brightness + BRIGHTNESS_INCR;
         if (g_curr_brightness > 256) {
             g_curr_brightness -+ 256;
         }
         panel.setBrightness(g_curr_brightness);
+        g_button_brightness_pressed = false;
     }
 }
 
