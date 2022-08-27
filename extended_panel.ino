@@ -362,6 +362,8 @@ bool interrupt() {
     }
 
     update_brightness(); 
+
+    return false;
 }
 
 void update_brightness() {
