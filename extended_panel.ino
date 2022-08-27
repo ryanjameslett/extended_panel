@@ -87,7 +87,8 @@ Color color;
 
 // global vars that can be used for various loops
 // max value 256
-byte x, y, i, j, d_pad;
+byte i, j, d_pad;
+int x, y;
 
 /**
  * Test loop
@@ -170,26 +171,43 @@ void color_wipe_loop() {
     color = panel.getColor(random(0, 256));
 
     if (d_pad & DOWN == DOWN) {
-        Serial.println("Down");
         wipe_forward = false;
         d_pad = 0;
     }
     else if (d_pad & UP == UP) {
-        Serial.println("Up");
         wipe_forward = true;
         d_pad = 0;
     }
 
-        panel.setCol(x, color.r, color.g, color.b);
-        panel.setCol(x-1, color.r-(color.r/4), color.g-(color.g/4), color.b-(color.b/4));
-        panel.setCol(x-2, color.r-(color.r/3), color.g-(color.g/3), color.b-(color.b/3));
-        panel.setCol(x-3, color.r/2, color.g/2, color.b/2);
-        panel.setCol(x-4, color.r/3, color.g/3, color.b/3);
-        panel.setCol(x-5, color.r/4, color.g/4, color.b/4);
-        panel.setCol(x-6, color.r/5, color.g/5, color.b/5);
-        //panel.setCol(x-7, 0, 0, 0);
-        panel.show();
-        delay(10);
+    Serial.println(wipe_forward);
+    if (wipe_forward) {
+        for (x = 0; x < g_total_length + 8; x++) {
+            if (interrupt()) { return; }
+            panel.setCol(x, color.r, color.g, color.b);
+            panel.setCol(x-1, color.r-(color.r/4), color.g-(color.g/4), color.b-(color.b/4));
+            panel.setCol(x-2, color.r-(color.r/3), color.g-(color.g/3), color.b-(color.b/3));
+            panel.setCol(x-3, color.r/2, color.g/2, color.b/2);
+            panel.setCol(x-4, color.r/3, color.g/3, color.b/3);
+            panel.setCol(x-5, color.r/4, color.g/4, color.b/4);
+            panel.setCol(x-6, color.r/5, color.g/5, color.b/5);
+            panel.show();
+            delay(WIPE_DELAY);
+        }
+    }
+    else {
+        for (x = g_total_length; x >= 0; x--) {
+            Serial.println(x);
+            if (interrupt()) { return; }
+            panel.setCol(x, color.r, color.g, color.b);
+            panel.setCol(x+1, color.r-(color.r/4), color.g-(color.g/4), color.b-(color.b/4));
+            panel.setCol(x+2, color.r-(color.r/3), color.g-(color.g/3), color.b-(color.b/3));
+            panel.setCol(x+3, color.r/2, color.g/2, color.b/2);
+            panel.setCol(x+4, color.r/3, color.g/3, color.b/3);
+            panel.setCol(x+5, color.r/4, color.g/4, color.b/4);
+            panel.setCol(x+6, color.r/5, color.g/5, color.b/5);
+            panel.show();
+            delay(WIPE_DELAY);
+        }
     }
 }
 
