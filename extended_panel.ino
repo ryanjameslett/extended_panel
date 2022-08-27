@@ -20,17 +20,18 @@
 #define STRAND_LENGTH 58
 
 #define BRIGHTNESS_PIN 0
-#define GRID_PIN 3
-#define TOP_STRAND_PIN 5
-#define BOT_STRAND_PIN 6
+#define GRID_PIN 4
+#define TOP_STRAND_PIN 2
+#define BOT_STRAND_PIN 3
 
-#define BUTTON_UP_PIN 7
-#define BUTTON_DOWN_PIN 8
-#define BUTTON_LEFT_PIN 9
-#define BUTTON_RIGHT_PIN 10
-#define BUTTON_NEXT_PIN 11
+#define BUTTON_UP_PIN 11
+#define BUTTON_DOWN_PIN 10
+#define BUTTON_LEFT_PIN 8
+#define BUTTON_RIGHT_PIN 9
+#define BUTTON_NEXT_PIN 12
+#define BUTTON_BRIGHTNESS_PIN 13
 
-#define P_INIT 2
+#define P_INIT 1
 #define P_COLOR_WHEEL 0
 #define P_COLOR_WIPE 1
 #define P_RAIN 2
