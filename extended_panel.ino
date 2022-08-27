@@ -39,6 +39,11 @@
 #define P_RENDER_SPRITES 4
 #define NUM_PROGRAMS 5
 
+#define LEFT 0x1000
+#define RIGHT 0x0100
+#define UP 0x0010
+#define DOWN 0x0001
+
 #define P_TEST 10
 
 
@@ -79,6 +84,10 @@ bool g_button_brightness_pressed = false;
 byte g_curr_brightness = BRIGHTNESS;
 
 Color color;
+
+// global vars that can be used for various loops
+// max value 256
+byte x, y, i, j, d_pad;
 
 /**
  * Test loop
@@ -155,14 +164,21 @@ void color_wheel_loop() {
 /***
  * Color Wipe Start
  */
-
+bool wipe_forward = true;
+#define WIPE_DELAY 10
 void color_wipe_loop() {
     color = panel.getColor(random(0, 256));
 
-    for (int x = 0; x < g_total_length + 8; x++) {
-        if (interrupt()) {
-            return;
-        }
+    if (d_pad & DOWN == DOWN) {
+        Serial.println("Down");
+        wipe_forward = false;
+        d_pad = 0;
+    }
+    else if (d_pad & UP == UP) {
+        Serial.println("Up");
+        wipe_forward = true;
+        d_pad = 0;
+    }
 
         panel.setCol(x, color.r, color.g, color.b);
         panel.setCol(x-1, color.r-(color.r/4), color.g-(color.g/4), color.b-(color.b/4));
@@ -189,7 +205,6 @@ void rain_loop() {
         g_rain_counter = random(0, 256);
     }
     Color color = panel.getColor(g_rain_counter);
-    Serial.println(g_rain_counter);
     g_rain_counter += 5;
     if (g_rain_counter > 256) {
         g_rain_counter -= 256;
@@ -327,9 +342,11 @@ void render_sprites_loop() {
         x += dx;
         y += dy;
 
+        /*
         Serial.print(x);
         Serial.print(",");
         Serial.println(y);
+        */
 
         if (x < xmin || x > xmax) {
             dx = -dx;
@@ -360,14 +377,29 @@ bool interrupt() {
         return true;
     }
 
+    update_d_pad();
     update_brightness(); 
 
     return false;
 }
 
-void update_brightness() {
-    Serial.println(g_curr_brightness);
+void update_d_pad() {
+    if (digitalRead(BUTTON_LEFT_PIN) == LOW) {
+        d_pad = d_pad | LEFT;
+    }
+    if (digitalRead(BUTTON_RIGHT_PIN) == LOW) {
+        d_pad = d_pad | RIGHT;
+    }
+    if (digitalRead(BUTTON_UP_PIN) == LOW) {
+        d_pad = d_pad | UP;
+    }
+    if (digitalRead(BUTTON_DOWN_PIN) == LOW) {
+        d_pad = d_pad | DOWN;
+    }
+    // Serial.println(d_pad);
+}
 
+void update_brightness() {
     if (digitalRead(BUTTON_BRIGHTNESS_PIN) == LOW) {
         g_button_brightness_pressed = true;
     }
@@ -383,7 +415,7 @@ void update_brightness() {
 
 void setup() {
     Serial.begin(9600);
-    Serial.println("Setup");
+    // Serial.println("Setup");
     panel.init(g_curr_brightness, INIT_COLOR_R, INIT_COLOR_G, INIT_COLOR_B);
 
     pinMode(BUTTON_UP_PIN, INPUT_PULLUP);
@@ -397,7 +429,7 @@ void setup() {
 }
 
 void loop() {
-    Serial.println("Loop");
+    // Serial.println("Loop");
     if (pressed(BUTTON_NEXT_PIN)) {
         g_curr_program++;
         delay(200);
