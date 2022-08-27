@@ -31,7 +31,7 @@
 #define BUTTON_NEXT_PIN 12
 #define BUTTON_BRIGHTNESS_PIN 13
 
-#define P_INIT 1
+#define P_INIT 2
 #define P_COLOR_WHEEL 0
 #define P_COLOR_WIPE 1
 #define P_RAIN 2
@@ -87,8 +87,8 @@ Color color;
 
 // global vars that can be used for various loops
 // max value 256
-byte i, j, d_pad;
-int x, y;
+byte d_pad;
+int x, y, i, j, tmp;
 
 /**
  * Test loop
@@ -212,32 +212,43 @@ void color_wipe_loop() {
 /**
  * Rain Start
  */
+
 #define g_raindrop_size 6
 byte g_rain_counter = 255;
+byte g_raindrops[GRID_HEIGHT] = {0,1,2,3,4,5,6,7};
 
 void rain_loop() {
     if (g_rain_counter == 255) {
         g_rain_counter = random(0, 254);
     }
 
-    color = panel.getColor(g_rain_counter);
-    g_rain_counter += 5; // will auto-loop because this is a byte
-    y = random(0, 8);
+    for (i=0; i< GRID_HEIGHT; i++) {
+        j = random(0, GRID_HEIGHT);
+        tmp = g_raindrops[i];
+        g_raindrops[i] = g_raindrops[j];
+        g_raindrops[j] = tmp;
+    }
 
-    for (int x = g_total_length; x >= -g_raindrop_size; x--) {
-        // bail out on next program press
-        if (interrupt()) {
-            return;
+    for (i = 0; i < GRID_HEIGHT; i++) {
+        y = g_raindrops[i];
+        color = panel.getColor(g_rain_counter);
+        g_rain_counter += 5; // will auto-loop because this is a byte
+
+        for (x = g_total_length; x >= -g_raindrop_size; x--) {
+            // bail out on next program press
+            if (interrupt()) {
+                return;
+            }
+
+            panel.setPixel(x, y, color.r, color.g, color.b);
+            panel.setPixel(x+1, y, color.r-(color.r/4), color.g-(color.g/4), color.b-(color.b/4));
+            panel.setPixel(x+2, y, color.r-(color.r/3), color.g-(color.g/3), color.b-(color.b/3));
+            panel.setPixel(x+3, y, color.r/2, color.g/2, color.b/2);
+            panel.setPixel(x+4, y, color.r/3, color.g/3, color.b/3);
+            panel.setPixel(x+5, y, color.r/4, color.g/4, color.b/4);
+            panel.show();
+            delay(3);
         }
-
-        panel.setPixel(x, y, color.r, color.g, color.b);
-        panel.setPixel(x+1, y, color.r-(color.r/4), color.g-(color.g/4), color.b-(color.b/4));
-        panel.setPixel(x+2, y, color.r-(color.r/3), color.g-(color.g/3), color.b-(color.b/3));
-        panel.setPixel(x+3, y, color.r/2, color.g/2, color.b/2);
-        panel.setPixel(x+4, y, color.r/3, color.g/3, color.b/3);
-        panel.setPixel(x+5, y, color.r/4, color.g/4, color.b/4);
-        panel.show();
-        delay(3);
     }
 }
 
