@@ -9,7 +9,7 @@
 #define SPRITES
 #endif
 
-#define BRIGHTNESS 127
+#define BRIGHTNESS 31
 #define BRIGHTNESS_INCR 32
 #define DELAY 10
 #define INIT_COLOR_R 0
@@ -31,7 +31,7 @@
 #define BUTTON_NEXT_PIN 12
 #define BUTTON_BRIGHTNESS_PIN 13
 
-#define P_INIT 3
+#define P_INIT 4
 #define P_COLOR_WHEEL 0
 #define P_COLOR_WIPE 1
 #define P_RAIN 2
@@ -88,7 +88,9 @@ Color color, bg_color;
 // global vars that can be used for various loops
 // max value 256
 byte d_pad;
-int x, y, i, j, tmp;
+int x, y, i, j, dx, dy, tmp;
+int xmin, xmax, ymin, ymax, buffer, buffer_sm;
+int count, max_loops;
 
 /**
  * Test loop
@@ -144,7 +146,7 @@ void color_wheel_loop() {
                 byte tmp = 0;
 
                 // bail out on next program press
-                if (pressed(BUTTON_NEXT_PIN)) {
+                if (interrupt()) {
                     return;
                 }
 
@@ -315,11 +317,11 @@ void simple_snake_loop() {
 /**
  * Render Sprites Loop
  */
+#define SPRITES_BRIGHTNESS 31
+
 void render_sprites_loop() {
     Sprite* sprite = get_rand_sprite();
-    int x, y, xmin, xmax, ymin, ymax, buffer, buffer_sm;
-    int dx, dy;
-    int count, max_loops;
+    panel.setBrightness(SPRITES_BRIGHTNESS); // don't draw too much power
 
     dx = dy = 1;
 
