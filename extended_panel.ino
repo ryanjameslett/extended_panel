@@ -31,7 +31,7 @@
 #define BUTTON_NEXT_PIN 12
 #define BUTTON_BRIGHTNESS_PIN 13
 
-#define P_INIT 2
+#define P_INIT 3
 #define P_COLOR_WHEEL 0
 #define P_COLOR_WIPE 1
 #define P_RAIN 2
@@ -257,7 +257,7 @@ void rain_loop() {
  */
 #define g_snake_size 2
 #define SSNAKE_DELAY 5
-#define SSNAKE_BRIGHTNESS 63
+#define SSNAKE_BRIGHTNESS 31
 
 void simple_snake_loop() {
     color = panel.getColor(random(0, 256));
