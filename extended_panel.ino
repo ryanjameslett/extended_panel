@@ -39,10 +39,10 @@
 #define P_RENDER_SPRITES 4
 #define NUM_PROGRAMS 5
 
-#define LEFT 0x1000
-#define RIGHT 0x0100
-#define UP 0x0010
-#define DOWN 0x0001
+#define LEFT 4
+#define RIGHT 3
+#define UP 2
+#define DOWN 1
 
 #define P_TEST 10
 
@@ -170,11 +170,11 @@ bool wipe_forward = true;
 void color_wipe_loop() {
     color = panel.getColor(random(0, 256));
 
-    if (d_pad & DOWN == DOWN) {
+    if (d_pad == DOWN) {
         wipe_forward = false;
         d_pad = 0;
     }
-    else if (d_pad & UP == UP) {
+    else if (d_pad == UP) {
         wipe_forward = true;
         d_pad = 0;
     }
@@ -195,8 +195,7 @@ void color_wipe_loop() {
         }
     }
     else {
-        for (x = g_total_length; x >= 0; x--) {
-            Serial.println(x);
+        for (x = g_total_length; x >= -8; x--) {
             if (interrupt()) { return; }
             panel.setCol(x, color.r, color.g, color.b);
             panel.setCol(x+1, color.r-(color.r/4), color.g-(color.g/4), color.b-(color.b/4));
@@ -401,6 +400,10 @@ bool interrupt() {
     return false;
 }
 
+/**
+ * TODO: figure out why reading bitmask wasn't working
+ * e.g. d_pad & UP == UP
+ */
 void update_d_pad() {
     if (digitalRead(BUTTON_LEFT_PIN) == LOW) {
         d_pad = d_pad | LEFT;
