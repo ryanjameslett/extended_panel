@@ -255,11 +255,14 @@ void rain_loop() {
 /**
  * Simple Snake
  */
-int g_snake_size = 5;
+#define g_snake_size 2
+#define SSNAKE_DELAY 5
+#define SSNAKE_BRIGHTNESS 63
 
 void simple_snake_loop() {
     color = panel.getColor(random(0, 256));
     bg_color = panel.getColor(random(0, 256));
+    panel.setBrightness(SSNAKE_BRIGHTNESS); // don't draw too much power
 
     // move 1
     for (x = g_total_length; x >= -g_snake_size; x--) {
@@ -269,7 +272,7 @@ void simple_snake_loop() {
         panel.setPixel(x, 0, color.r, color.g, color.b);
         panel.setPixel(x+g_snake_size, 0, bg_color.r, bg_color.g, bg_color.b);
         panel.show();
-        delay(5);
+        delay(SSNAKE_DELAY);
     }
 
     // move 2 - 7
@@ -281,7 +284,7 @@ void simple_snake_loop() {
             panel.setPixel(x, y, color.r, color.g, color.b);
             panel.setPixel(x-g_snake_size, y, bg_color.r, bg_color.g, bg_color.b);
             panel.show();
-            delay(5);
+            delay(SSNAKE_DELAY);
         }
 
         y++;
@@ -293,7 +296,7 @@ void simple_snake_loop() {
             panel.setPixel(x, y, color.r, color.g, color.b);
             panel.setPixel(x+g_snake_size, y, bg_color.r, bg_color.g, bg_color.b);
             panel.show();
-            delay(5);
+            delay(SSNAKE_DELAY);
         }
     }
 
@@ -305,7 +308,7 @@ void simple_snake_loop() {
         panel.setPixel(x, 7, color.r, color.g, color.b);
         panel.setPixel(x-g_snake_size, 7, bg_color.r, bg_color.g, bg_color.b);
         panel.show();
-        delay(5);
+        delay(SSNAKE_DELAY);
     }
 }
 
@@ -415,10 +418,11 @@ void update_brightness() {
         g_button_brightness_pressed = true;
     }
     else if (g_button_brightness_pressed) {
-        g_curr_brightness = g_curr_brightness + BRIGHTNESS_INCR;
+        g_curr_brightness += BRIGHTNESS_INCR;
+        /*
         if (g_curr_brightness > 256) {
             g_curr_brightness -+ 256;
-        }
+        }*/
         panel.setBrightness(g_curr_brightness);
         g_button_brightness_pressed = false;
     }
