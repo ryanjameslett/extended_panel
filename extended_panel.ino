@@ -78,6 +78,8 @@ int g_curr_program = P_INIT;
 bool g_button_brightness_pressed = false;
 byte g_curr_brightness = BRIGHTNESS;
 
+Color color;
+
 /**
  * Test loop
  */
@@ -155,23 +157,20 @@ void color_wheel_loop() {
  */
 
 void color_wipe_loop() {
-    Color color = panel.getColor(random(0, 256));
-    int r = color.r;
-    int g = color.g;
-    int b = color.b;
+    color = panel.getColor(random(0, 256));
 
     for (int x = 0; x < g_total_length + 8; x++) {
         if (interrupt()) {
             return;
         }
 
-        panel.setCol(x, r, g, b);
-        panel.setCol(x-1, r-(r/4), g-(g/4), b-(b/4));
-        panel.setCol(x-2, r-(r/3), g-(g/3), b-(b/3));
-        panel.setCol(x-3, r/2, g/2, b/2);
-        panel.setCol(x-4, r/3, g/3, b/3);
-        panel.setCol(x-5, r/4, g/4, b/4);
-        panel.setCol(x-6, r/5, g/5, b/5);
+        panel.setCol(x, color.r, color.g, color.b);
+        panel.setCol(x-1, color.r-(color.r/4), color.g-(color.g/4), color.b-(color.b/4));
+        panel.setCol(x-2, color.r-(color.r/3), color.g-(color.g/3), color.b-(color.b/3));
+        panel.setCol(x-3, color.r/2, color.g/2, color.b/2);
+        panel.setCol(x-4, color.r/3, color.g/3, color.b/3);
+        panel.setCol(x-5, color.r/4, color.g/4, color.b/4);
+        panel.setCol(x-6, color.r/5, color.g/5, color.b/5);
         //panel.setCol(x-7, 0, 0, 0);
         panel.show();
         delay(10);
