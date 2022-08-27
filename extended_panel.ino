@@ -266,12 +266,11 @@ void simple_snake_loop() {
     int tr_r = random(0, 256);
     int tr_g = random(0, 256 - tr_r);
     int tr_b = random(0, 256 - tr_g);
-    int x, y;
 
     // move 1
     for (x = g_total_length; x >= -g_snake_size; x--) {
         // bail out on next program press
-        if (pressed(BUTTON_NEXT_PIN)) {
+        if (interrupt()) {
             return;
         }
         panel.setPixel(x, 0, r, g, b);
@@ -284,7 +283,7 @@ void simple_snake_loop() {
     for (y = 1; y < GRID_HEIGHT - 1; y++) {
         for (x = 0; x < GRID_LENGTH + g_snake_size; x++) {
             // bail out on next program press
-            if (pressed(BUTTON_NEXT_PIN)) {
+            if (interrupt()) {
                 return;
             }
             panel.setPixel(x, y, r, g, b);
