@@ -31,7 +31,7 @@
 #define BUTTON_NEXT_PIN 12
 #define BUTTON_BRIGHTNESS_PIN 13
 
-#define P_INIT 5
+#define P_INIT 1
 #define P_COLOR_WHEEL 0
 #define P_COLOR_WIPE 1
 #define P_RAIN 2
