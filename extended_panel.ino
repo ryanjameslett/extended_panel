@@ -383,11 +383,13 @@ void render_sprites_loop() {
 uint8_t score = 0;
 bool game_over = false;
 bool make_fruit = true;
+bool grow;
 bool change_direction = false;
 #define SNAKE_BRIGHTNESS 31
 #define MAX_SNAKE_LEN 5
 #define SNAKE_DELAY_INCR 20
 #define SNAKE_DELAY_MIN 10
+#define SNAKE_INIT_DELAY 150
 
 struct Segment {
     byte x, y, direction;
@@ -402,7 +404,8 @@ void snake_loop() {
     snake[0].y = 3;
     snake[0].direction = UP;
     snake_len = 1;
-    snake_delay = 500;
+    snake_delay = SNAKE_INIT_DELAY;
+    grow = false;
 
     panel.setBrightness(SNAKE_BRIGHTNESS);
 
@@ -410,31 +413,6 @@ void snake_loop() {
         if (interrupt()) { // also collects button presses
             return;
         }
-
-        /*
-        Serial.println("Start");
-        Serial.print(snake_len);
-        Serial.print(",");
-        Serial.print(snake[0].x);
-        Serial.print(",");
-        Serial.print(snake[0].y);
-        Serial.print(" ");
-        Serial.print(snake[1].x);
-        Serial.print(",");
-        Serial.print(snake[1].y);
-        Serial.print(" ");
-        Serial.print(snake[2].x);
-        Serial.print(",");
-        Serial.print(snake[2].y);
-        Serial.print(" ");
-        Serial.print(snake[3].x);
-        Serial.print(",");
-        Serial.print(snake[3].y);
-        Serial.print(" ");
-        Serial.print(snake[4].x);
-        Serial.print(",");
-        Serial.println(snake[4].y);
-        */
 
         // check for losing conditions
         if (snake[0].x < 0 
@@ -466,8 +444,13 @@ void snake_loop() {
             d_pad = 0;
         }
 
+        if (grow) {
+            snake_len++;
+            grow = false;
+        }
+
         // make the rest of the snake follow
-        for (tmp = 1; tmp < snake_len; tmp++) {
+        for (tmp = snake_len; tmp > 0; tmp--) {
             snake[tmp].x = snake[tmp-1].x;
             snake[tmp].y = snake[tmp-1].y;
             snake[tmp].direction = snake[tmp-1].direction;
@@ -488,6 +471,16 @@ void snake_loop() {
                 break;
         }
 
+        /**
+        if (grow) {
+            snake[snake_len].x = snake[snake_len-1].x;
+            snake[snake_len].y = snake[snake_len-1].y;
+            snake[snake_len].direction = snake[snake_len-1].direction;
+            snake_len++;
+            grow = false;
+        }
+        **/
+
         if (make_fruit) {
             i = random(0, GRID_LENGTH);
             j = random(0, GRID_HEIGHT);
@@ -504,10 +497,7 @@ void snake_loop() {
 
             // grow
             if (snake_len < MAX_SNAKE_LEN) {
-                snake[snake_len].x = snake[snake_len-1].x;
-                snake[snake_len].y = snake[snake_len-1].y;
-                snake[snake_len].direction = snake[snake_len-1].direction;
-                snake_len++;
+                grow = true;
             }
         }
 
