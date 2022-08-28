@@ -31,13 +31,14 @@
 #define BUTTON_NEXT_PIN 12
 #define BUTTON_BRIGHTNESS_PIN 13
 
-#define P_INIT 4
+#define P_INIT 5
 #define P_COLOR_WHEEL 0
 #define P_COLOR_WIPE 1
 #define P_RAIN 2
 #define P_SIMPLE_SNAKE 3
 #define P_RENDER_SPRITES 4
-#define NUM_PROGRAMS 5
+#define P_SNAKE 5
+#define NUM_PROGRAMS 6
 
 #define LEFT 4
 #define RIGHT 3
@@ -376,6 +377,44 @@ void render_sprites_loop() {
 }
 
 /**
+ * Snake Game
+ *
+ */
+uint8_t score = 0;
+byte curr_direction = UP;
+bool game_over = false;
+#define SNAKE_BRIGHTNESS
+
+void snake_loop() {
+    x = 0;
+    y = 3;
+
+    panel.update_brightness(SSNAKE_BRIGHTNESS);
+
+    while(!game_over) {
+        if (interrupt()) { // also collects button presses
+            return;
+        }
+
+        if (d_pad > 0) {
+            curr_direction = d_pad;
+            d_pad = 0;
+        }
+
+        i = random(0, GRID_LENGTH);
+        j = random(0, GRID_HEIGHT);
+
+        panel.fill(63,63,63);
+
+        panel.setPixel(x, y, 0, 255, 0); // snake head
+        panel.setPixel(i, j, 255, 0, 0); // food
+
+        panel.show();
+        delay(150);
+    }
+}
+
+/**
  *Main code
  */
 
@@ -475,6 +514,10 @@ void loop() {
 
         case P_RENDER_SPRITES:
             render_sprites_loop();
+            break;
+
+        case P_SNAKE:
+            snake_loop();
             break;
 
         // Test and diagnostic programs
