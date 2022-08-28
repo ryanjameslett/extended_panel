@@ -383,31 +383,53 @@ void render_sprites_loop() {
 uint8_t score = 0;
 byte curr_direction = UP;
 bool game_over = false;
+bool make_fruit = true;
 #define SNAKE_BRIGHTNESS
 
-void snake_loop() {
-    x = 0;
-    y = 3;
+struct Segment {
+    byte x, y;
+};
 
-    panel.update_brightness(SSNAKE_BRIGHTNESS);
+Segment snake[32 * 8];
+byte snake_len;
+
+void snake_loop() {
+    snake[0].x = 0;
+    snake[0].y = 3;
+    snake_len = 1;
+
+    panel.setBrightness(SSNAKE_BRIGHTNESS);
 
     while(!game_over) {
         if (interrupt()) { // also collects button presses
             return;
         }
 
+        if (make_fruit) {
+            i = random(0, GRID_LENGTH);
+            j = random(0, GRID_HEIGHT);
+            make_fruit = false;
+        }
+
+        // snake eats fruit
+        /*
+        if (snake[0].x == i && snake[0].y ==j) {
+            snake_len++;
+        }
+        */
+
         if (d_pad > 0) {
             curr_direction = d_pad;
             d_pad = 0;
         }
 
-        i = random(0, GRID_LENGTH);
-        j = random(0, GRID_HEIGHT);
 
         panel.fill(63,63,63);
 
-        panel.setPixel(x, y, 0, 255, 0); // snake head
         panel.setPixel(i, j, 255, 0, 0); // food
+        for (tmp=0; tmp<snake_len; tmp++) {
+            panel.setPixel(snake[tmp].x, snake[tmp].y, 0, 255, 0); // snake head
+        }
 
         panel.show();
         delay(150);
