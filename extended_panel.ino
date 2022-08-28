@@ -429,13 +429,13 @@ void snake_loop() {
             if (snake[0].direction == UP && d_pad != DOWN) {
                 change_direction = true;
             }
-            if (snake[0].direction == LEFT && d_pad != RIGHT) {
+            else if (snake[0].direction == LEFT && d_pad != RIGHT) {
                 change_direction = true;
             }
-            if (snake[0].direction == RIGHT && d_pad != LEFT) {
+            else if (snake[0].direction == RIGHT && d_pad != LEFT) {
                 change_direction = true;
             }
-            if (snake[0].direction == DOWN && d_pad != UP) {
+            else if (snake[0].direction == DOWN && d_pad != UP) {
                 change_direction = true;
             }
             if (change_direction) {
