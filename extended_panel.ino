@@ -542,13 +542,13 @@ void update_d_pad() {
     if (digitalRead(BUTTON_LEFT_PIN) == LOW) {
         d_pad = d_pad | LEFT;
     }
-    if (digitalRead(BUTTON_RIGHT_PIN) == LOW) {
+    else if (digitalRead(BUTTON_RIGHT_PIN) == LOW) {
         d_pad = d_pad | RIGHT;
     }
-    if (digitalRead(BUTTON_UP_PIN) == LOW) {
+    else if (digitalRead(BUTTON_UP_PIN) == LOW) {
         d_pad = d_pad | UP;
     }
-    if (digitalRead(BUTTON_DOWN_PIN) == LOW) {
+    else if (digitalRead(BUTTON_DOWN_PIN) == LOW) {
         d_pad = d_pad | DOWN;
     }
     // Serial.println(d_pad);
@@ -560,10 +560,6 @@ void update_brightness() {
     }
     else if (g_button_brightness_pressed) {
         g_curr_brightness += BRIGHTNESS_INCR;
-        /*
-        if (g_curr_brightness > 256) {
-            g_curr_brightness -+ 256;
-        }*/
         panel.setBrightness(g_curr_brightness);
         g_button_brightness_pressed = false;
     }
