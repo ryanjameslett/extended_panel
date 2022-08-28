@@ -397,7 +397,7 @@ struct Segment {
     byte x, y, direction;
 };
 
-Segment snake[5];
+Segment snake[8];
 int snake_len;
 int snake_delay;
 
