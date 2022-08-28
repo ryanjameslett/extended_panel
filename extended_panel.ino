@@ -505,7 +505,7 @@ void snake_loop() {
         delay(snake_delay);
     }
 
-    panel.fill(255, 0, 0);
+    panel.fill(127, 0, 0);
     panel.show();
     delay(200);
 
