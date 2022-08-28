@@ -388,7 +388,7 @@ bool make_fruit = true;
 bool grow;
 bool change_direction = false;
 #define SNAKE_BRIGHTNESS 31
-#define MAX_SNAKE_LEN 5
+#define MAX_SNAKE_LEN 8
 #define SNAKE_DELAY_INCR 20
 #define SNAKE_DELAY_MIN 10
 #define SNAKE_INIT_DELAY 150
@@ -397,7 +397,7 @@ struct Segment {
     byte x, y, direction;
 };
 
-Segment snake[8];
+Segment snake[MAX_SNAKE_LEN];
 int snake_len;
 int snake_delay;
 
@@ -408,6 +408,7 @@ void snake_loop() {
     snake_len = 1;
     snake_delay = SNAKE_INIT_DELAY;
     grow = false;
+    d_pad = 0;
 
     panel.setBrightness(SNAKE_BRIGHTNESS);
 
@@ -502,11 +503,20 @@ void snake_loop() {
         panel.show();
 
         delay(snake_delay);
+        Serial.println(snake_len);
     }
 
     panel.fill(255, 0, 0);
     panel.show();
-    delay(1000);
+    delay(200);
+
+    panel.fill(0,0,0);
+    for (tmp=0; tmp < snake_len; tmp++) {
+        panel.setPixel(20 - tmp, 3, 255, 0, 0);
+    }
+    panel.show();
+    delay(1500);
+
     game_over = false;
     make_fruit = true;
 }
@@ -620,6 +630,5 @@ void loop() {
         case P_TEST:
             test_loop();
             break;
-
     }
 }
