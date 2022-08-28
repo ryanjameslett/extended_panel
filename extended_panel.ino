@@ -450,7 +450,7 @@ void snake_loop() {
         }
 
         // make the rest of the snake follow
-        for (tmp = snake_len; tmp > 0; tmp--) {
+        for (tmp = snake_len-1; tmp > 0; tmp--) {
             snake[tmp].x = snake[tmp-1].x;
             snake[tmp].y = snake[tmp-1].y;
             snake[tmp].direction = snake[tmp-1].direction;
