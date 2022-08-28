@@ -484,6 +484,8 @@ void snake_loop() {
             // grow
             if (snake_len <= MAX_SNAKE_LEN) {
                 snake[snake_len].x = snake[snake_len-1].x;
+                snake[snake_len].y = snake[snake_len-1].y;
+                snake[snake_len].direction = snake[snake_len-1].direction;
                 snake_len++;
             }
         }
