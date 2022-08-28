@@ -387,6 +387,8 @@ bool change_direction = false;
 #define SNAKE_BRIGHTNESS 31
 #define SNAKE_INIT_DELAY 150
 #define MAX_SNAKE_LEN 5
+#define SNAKE_DELAY_INCR 10
+#define SNAKE_DELAY_MIN 10
 
 struct Segment {
     byte x, y, direction;
@@ -475,7 +477,9 @@ void snake_loop() {
         // snake eats fruit
         if (snake[0].x == i && snake[0].y ==j) {
             make_fruit = true;
-            snake_delay -+ 10;
+            if (snake_delay > SNAKE_DELAY_MIN) {
+                snake_delay -+ SNAKE_DELAY_INCR;
+            }
 
             // grow
             if (snake_len <= MAX_SNAKE_LEN) {
