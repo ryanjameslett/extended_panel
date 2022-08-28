@@ -140,14 +140,16 @@ void set_color_pixel(int x, int y, byte value) {
     }
 }
 
+# define COLOR_WHEEL_BRIGHTNESS 31
 void color_wheel_loop() {
+    panel.setBrightness(COLOR_WHEEL_BRIGHTNESS);
     for (int16_t j = 0; j < 256 * 5; j++) {
         for (int16_t x = 0; x < GRID_LENGTH + STRAND_LENGTH ; x++) {
             for (int16_t y = 0; y < GRID_HEIGHT; y++) {
                 byte tmp = 0;
 
                 // bail out on next program press
-                if (interrupt()) {
+                if (interrupt(false)) {
                     return;
                 }
 
@@ -184,7 +186,7 @@ void color_wipe_loop() {
 
     if (wipe_forward) {
         for (x = 0; x < g_total_length + 8; x++) {
-            if (interrupt()) { return; }
+            if (interrupt(true)) { return; }
             panel.setCol(x, color.r, color.g, color.b);
             panel.setCol(x-1, color.r-(color.r/4), color.g-(color.g/4), color.b-(color.b/4));
             panel.setCol(x-2, color.r-(color.r/3), color.g-(color.g/3), color.b-(color.b/3));
@@ -198,7 +200,7 @@ void color_wipe_loop() {
     }
     else {
         for (x = g_total_length; x >= -8; x--) {
-            if (interrupt()) { return; }
+            if (interrupt(true)) { return; }
             panel.setCol(x, color.r, color.g, color.b);
             panel.setCol(x+1, color.r-(color.r/4), color.g-(color.g/4), color.b-(color.b/4));
             panel.setCol(x+2, color.r-(color.r/3), color.g-(color.g/3), color.b-(color.b/3));
@@ -239,7 +241,7 @@ void rain_loop() {
 
         for (x = g_total_length; x >= -g_raindrop_size; x--) {
             // bail out on next program press
-            if (interrupt()) {
+            if (interrupt(true)) {
                 return;
             }
 
@@ -269,7 +271,7 @@ void simple_snake_loop() {
 
     // move 1
     for (x = g_total_length; x >= -g_snake_size; x--) {
-        if (interrupt()) {
+        if (interrupt(false)) {
             return;
         }
         panel.setPixel(x, 0, color.r, color.g, color.b);
@@ -281,7 +283,7 @@ void simple_snake_loop() {
     // move 2 - 7
     for (y = 1; y < GRID_HEIGHT - 1; y++) {
         for (x = 0; x < GRID_LENGTH + g_snake_size; x++) {
-            if (interrupt()) {
+            if (interrupt(false)) {
                 return;
             }
             panel.setPixel(x, y, color.r, color.g, color.b);
@@ -293,7 +295,7 @@ void simple_snake_loop() {
         y++;
 
         for (x = GRID_LENGTH; x >= 0 - g_snake_size; x--) {
-            if (interrupt()) {
+            if (interrupt(false)) {
                 return;
             }
             panel.setPixel(x, y, color.r, color.g, color.b);
@@ -305,7 +307,7 @@ void simple_snake_loop() {
 
     // move 8
     for (x = 0; x < g_total_length + g_snake_size; x++) {
-        if (interrupt()) {
+        if (interrupt(false)) {
             return;
         }
         panel.setPixel(x, 7, color.r, color.g, color.b);
@@ -348,7 +350,7 @@ void render_sprites_loop() {
 
     while(count < max_loops) {
         // bail out on next program press
-        if (interrupt()) {
+        if (interrupt(false)) {
             return;
         }
 
@@ -410,7 +412,7 @@ void snake_loop() {
     panel.setBrightness(SNAKE_BRIGHTNESS);
 
     while(!game_over) {
-        if (interrupt()) { // also collects button presses
+        if (interrupt(false)) { // get d-pad, don't check brightness
             return;
         }
 
@@ -518,13 +520,16 @@ void snake_loop() {
  * and do things like update brightness from within loops
  * Returns true if the program needs to exit
  */
-bool interrupt() {
+bool interrupt(bool check_brightness) {
     if (digitalRead(BUTTON_NEXT_PIN) == LOW) {
         return true;
     }
 
     update_d_pad();
-    update_brightness(); 
+
+    if (check_brightness) {
+        update_brightness();
+    }
 
     return false;
 }
