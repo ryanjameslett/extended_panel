@@ -474,7 +474,6 @@ void snake_loop() {
         if (make_fruit) {
             i = random(0, GRID_LENGTH);
             j = random(0, GRID_HEIGHT);
-            j = 3; // TODO: remove this later
             make_fruit = false;
         }
 
