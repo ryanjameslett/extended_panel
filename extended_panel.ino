@@ -503,7 +503,6 @@ void snake_loop() {
         panel.show();
 
         delay(snake_delay);
-        Serial.println(snake_len);
     }
 
     panel.fill(255, 0, 0);
@@ -512,8 +511,9 @@ void snake_loop() {
 
     // draw snake length
     panel.fill(0,0,0);
-    for (tmp=0; tmp < snake_len; tmp++) {
-        panel.setPixel(20 - tmp, 3, 0, 255, 0);
+    for (x=0; x < snake_len; x++) {
+        y = x / 4;
+        panel.setPixel(20 - x + (y * 4), 3 + y, 0, 255, 0);
     }
     panel.show();
     delay(1500);
