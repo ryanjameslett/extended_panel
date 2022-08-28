@@ -387,7 +387,7 @@ bool change_direction = false;
 #define SNAKE_BRIGHTNESS 31
 #define SNAKE_INIT_DELAY 150
 #define MAX_SNAKE_LEN 5
-#define SNAKE_DELAY_INCR 10
+#define SNAKE_DELAY_INCR 20
 #define SNAKE_DELAY_MIN 10
 
 struct Segment {
@@ -442,6 +442,13 @@ void snake_loop() {
             d_pad = 0;
         }
 
+        // make the rest of the snake follow
+        for (tmp = 1; tmp < snake_len; tmp++) {
+                snake[tmp].x = snake[tmp-1].x;
+                snake[tmp].y = snake[tmp-1].y;
+                snake[tmp].direction = snake[tmp-1].direction;
+        }
+
         switch (snake[0].direction) {
             case UP:
                 snake[0].x++;
@@ -457,20 +464,10 @@ void snake_loop() {
                 break;
         }
 
-        // make the rest of the snake follow
-        /*
-        for (tmp=0; tmp<snake_len; tmp++) {
-            if (tmp > 0) {
-                snake[tmp-1].x = snake[tmp].x;
-                snake[tmp-1].y = snake[tmp].y;
-                snake[tmp-1].direction = snake[tmp].direction;
-            }
-        }
-        */
-
         if (make_fruit) {
             i = random(0, GRID_LENGTH);
             j = random(0, GRID_HEIGHT);
+            j = 3; // TODO: remove this later
             make_fruit = false;
         }
 
