@@ -385,7 +385,6 @@ bool game_over = false;
 bool make_fruit = true;
 bool change_direction = false;
 #define SNAKE_BRIGHTNESS 31
-#define SNAKE_INIT_DELAY 150
 #define MAX_SNAKE_LEN 5
 #define SNAKE_DELAY_INCR 20
 #define SNAKE_DELAY_MIN 10
@@ -395,15 +394,15 @@ struct Segment {
 };
 
 Segment snake[5];
-byte snake_len;
-byte snake_delay;
+int snake_len;
+int snake_delay;
 
 void snake_loop() {
     snake[0].x = 0;
     snake[0].y = 3;
     snake[0].direction = UP;
     snake_len = 1;
-    snake_delay = SNAKE_INIT_DELAY;
+    snake_delay = 500;
 
     panel.setBrightness(SNAKE_BRIGHTNESS);
 
@@ -411,6 +410,29 @@ void snake_loop() {
         if (interrupt()) { // also collects button presses
             return;
         }
+
+        Serial.println("Start");
+        Serial.print(snake_len);
+        Serial.print(",");
+        Serial.print(snake[0].x);
+        Serial.print(",");
+        Serial.print(snake[0].y);
+        Serial.print(" ");
+        Serial.print(snake[1].x);
+        Serial.print(",");
+        Serial.print(snake[1].y);
+        Serial.print(" ");
+        Serial.print(snake[2].x);
+        Serial.print(",");
+        Serial.print(snake[2].y);
+        Serial.print(" ");
+        Serial.print(snake[3].x);
+        Serial.print(",");
+        Serial.print(snake[3].y);
+        Serial.print(" ");
+        Serial.print(snake[4].x);
+        Serial.print(",");
+        Serial.println(snake[4].y);
 
         // check for losing conditions
         if (snake[0].x < 0 
@@ -479,7 +501,7 @@ void snake_loop() {
             }
 
             // grow
-            if (snake_len <= MAX_SNAKE_LEN) {
+            if (snake_len < MAX_SNAKE_LEN) {
                 snake[snake_len].x = snake[snake_len-1].x;
                 snake[snake_len].y = snake[snake_len-1].y;
                 snake[snake_len].direction = snake[snake_len-1].direction;
@@ -491,7 +513,7 @@ void snake_loop() {
         panel.fill(63,63,63);
         panel.setPixel(i, j, 255, 0, 0); // food
         for (tmp = 0; tmp < snake_len; tmp++) {
-            panel.setPixel(snake[tmp].x, snake[tmp].y, 0, 255, 0); // snake head
+            panel.setPixel(snake[tmp].x, snake[tmp].y, 0, 255, 0); // snake
         }
 
         panel.show();
