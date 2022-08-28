@@ -411,6 +411,7 @@ void snake_loop() {
             return;
         }
 
+        /*
         Serial.println("Start");
         Serial.print(snake_len);
         Serial.print(",");
@@ -433,6 +434,7 @@ void snake_loop() {
         Serial.print(snake[4].x);
         Serial.print(",");
         Serial.println(snake[4].y);
+        */
 
         // check for losing conditions
         if (snake[0].x < 0 
@@ -466,9 +468,9 @@ void snake_loop() {
 
         // make the rest of the snake follow
         for (tmp = 1; tmp < snake_len; tmp++) {
-                snake[tmp].x = snake[tmp-1].x;
-                snake[tmp].y = snake[tmp-1].y;
-                snake[tmp].direction = snake[tmp-1].direction;
+            snake[tmp].x = snake[tmp-1].x;
+            snake[tmp].y = snake[tmp-1].y;
+            snake[tmp].direction = snake[tmp-1].direction;
         }
 
         switch (snake[0].direction) {
