@@ -381,29 +381,90 @@ void render_sprites_loop() {
  *
  */
 uint8_t score = 0;
-byte curr_direction = UP;
 bool game_over = false;
 bool make_fruit = true;
-#define SNAKE_BRIGHTNESS
+bool change_direction = false;
+#define SNAKE_BRIGHTNESS 31
+#define SNAKE_INIT_DELAY 150
+#define MAX_SNAKE_LEN 5
 
 struct Segment {
-    byte x, y;
+    byte x, y, direction;
 };
 
-Segment snake[32 * 8];
+Segment snake[5];
 byte snake_len;
+byte snake_delay;
 
 void snake_loop() {
     snake[0].x = 0;
     snake[0].y = 3;
+    snake[0].direction = UP;
     snake_len = 1;
+    snake_delay = SNAKE_INIT_DELAY;
 
-    panel.setBrightness(SSNAKE_BRIGHTNESS);
+    panel.setBrightness(SNAKE_BRIGHTNESS);
 
     while(!game_over) {
         if (interrupt()) { // also collects button presses
             return;
         }
+
+        // check for losing conditions
+        if (snake[0].x < 0 
+            || snake[0].x >= GRID_LENGTH
+            || snake[0].y < 0
+            || snake[0].y >= GRID_HEIGHT
+        ) {
+            game_over = true;
+            continue;
+        }
+
+        if (d_pad > 0) {
+            change_direction = false;
+            if (snake[0].direction == UP && d_pad != DOWN) {
+                change_direction = true;
+            }
+            if (snake[0].direction == LEFT && d_pad != RIGHT) {
+                change_direction = true;
+            }
+            if (snake[0].direction == RIGHT && d_pad != LEFT) {
+                change_direction = true;
+            }
+            if (snake[0].direction == DOWN && d_pad != UP) {
+                change_direction = true;
+            }
+            if (change_direction) {
+                snake[0].direction = d_pad;
+            }
+            d_pad = 0;
+        }
+
+        switch (snake[0].direction) {
+            case UP:
+                snake[0].x++;
+                break;
+            case DOWN:
+                snake[0].x--;
+                break;
+            case LEFT:
+                snake[0].y--;
+                break;
+            case RIGHT:
+                snake[0].y++;
+                break;
+        }
+
+        // make the rest of the snake follow
+        /*
+        for (tmp=0; tmp<snake_len; tmp++) {
+            if (tmp > 0) {
+                snake[tmp-1].x = snake[tmp].x;
+                snake[tmp-1].y = snake[tmp].y;
+                snake[tmp-1].direction = snake[tmp].direction;
+            }
+        }
+        */
 
         if (make_fruit) {
             i = random(0, GRID_LENGTH);
@@ -412,28 +473,34 @@ void snake_loop() {
         }
 
         // snake eats fruit
-        /*
         if (snake[0].x == i && snake[0].y ==j) {
-            snake_len++;
+            make_fruit = true;
+            snake_delay -+ 10;
+
+            // grow
+            if (snake_len <= MAX_SNAKE_LEN) {
+                snake[snake_len].x = snake[snake_len-1].x;
+                snake_len++;
+            }
         }
-        */
 
-        if (d_pad > 0) {
-            curr_direction = d_pad;
-            d_pad = 0;
-        }
-
-
+        // draw things
         panel.fill(63,63,63);
-
         panel.setPixel(i, j, 255, 0, 0); // food
-        for (tmp=0; tmp<snake_len; tmp++) {
+        for (tmp = 0; tmp < snake_len; tmp++) {
             panel.setPixel(snake[tmp].x, snake[tmp].y, 0, 255, 0); // snake head
         }
 
         panel.show();
-        delay(150);
+
+        delay(snake_delay);
     }
+
+    panel.fill(255, 0, 0);
+    panel.show();
+    delay(1000);
+    game_over = false;
+    make_fruit = true;
 }
 
 /**
