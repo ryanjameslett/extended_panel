@@ -471,16 +471,6 @@ void snake_loop() {
                 break;
         }
 
-        /**
-        if (grow) {
-            snake[snake_len].x = snake[snake_len-1].x;
-            snake[snake_len].y = snake[snake_len-1].y;
-            snake[snake_len].direction = snake[snake_len-1].direction;
-            snake_len++;
-            grow = false;
-        }
-        **/
-
         if (make_fruit) {
             i = random(0, GRID_LENGTH);
             j = random(0, GRID_HEIGHT);
@@ -492,7 +482,7 @@ void snake_loop() {
         if (snake[0].x == i && snake[0].y ==j) {
             make_fruit = true;
             if (snake_delay > SNAKE_DELAY_MIN) {
-                snake_delay -+ SNAKE_DELAY_INCR;
+                snake_delay -= SNAKE_DELAY_INCR;
             }
 
             // grow
