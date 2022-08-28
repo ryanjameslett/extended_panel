@@ -388,7 +388,7 @@ bool make_fruit = true;
 bool grow;
 bool change_direction = false;
 #define SNAKE_BRIGHTNESS 31
-#define MAX_SNAKE_LEN 8
+#define MAX_SNAKE_LEN 10
 #define SNAKE_DELAY_INCR 20
 #define SNAKE_DELAY_MIN 10
 #define SNAKE_INIT_DELAY 150
@@ -510,9 +510,10 @@ void snake_loop() {
     panel.show();
     delay(200);
 
+    // draw snake length
     panel.fill(0,0,0);
     for (tmp=0; tmp < snake_len; tmp++) {
-        panel.setPixel(20 - tmp, 3, 255, 0, 0);
+        panel.setPixel(20 - tmp, 3, 0, 255, 0);
     }
     panel.show();
     delay(1500);
